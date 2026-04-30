@@ -1,0 +1,44 @@
+name: Deploy to DigitalOcean
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script: |
+            set -e
+
+            cd /var/www/app
+
+            # Ensure correct branch
+            git fetch --all
+            git checkout main
+            git pull origin main
+
+            # Backend deps
+            composer install --no-dev --optimize-autoloader
+
+            # Frontend build (Vite)
+            npm ci
+            npm run build
+
+            # Laravel optimizations
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+
+            # Reload services (optional)
+            sudo systemctl reload nginx || true
+            sudo systemctl restart laravel-queue || true

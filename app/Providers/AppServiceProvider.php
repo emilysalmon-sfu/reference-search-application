@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Support\ServiceProvider;
+use Inertia\Inertia;
+use Maatwebsite\Excel\Imports\HeadingRowFormatter;
+
+class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Register any application services.
+     */
+    public function register(): void
+    {
+        //
+    }
+
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
+    {
+        HeadingRowFormatter::default('none');
+
+        Inertia::share([
+            'auth' => function () {
+                return [
+                    'user' => auth()->user(),
+                ];
+            },
+        ]);
+    }
+}
