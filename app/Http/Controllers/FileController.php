@@ -6,7 +6,6 @@ use App\Exports\ArticlesExport;
 use App\Http\Requests\FileExportRequest;
 use App\Http\Requests\FileUploadRequest;
 use App\Imports\ArticlesImport;
-use App\Imports\Sheets\ArticleSheetImport;
 use App\Models\Article;
 use App\Models\ArticleExportInfo;
 use App\Models\ArticleImportUpload;
@@ -24,10 +23,9 @@ class FileController extends Controller
     public function fileUpload(FileUploadRequest $request)
     {
         try {
-            $articleSheetImport = new ArticleSheetImport;
             $file = $request->file('file');
 
-            $import = new ArticlesImport($articleSheetImport);
+            $import = new ArticlesImport;
 
             Excel::import(
                 $import,
@@ -36,17 +34,19 @@ class FileController extends Controller
 
             ArticleImportUpload::create([
                 'date' => now('America/Vancouver')->toDateString(),
-                'articlesCreated' => $import->getArticlesImportedCount(),
+                'articlesCreated' => $import->created,
             ]);
 
             Log::info('File uploaded successfully', [
                 'date' => now('America/Vancouver')->toDateString(),
                 'file' => $file->getClientOriginalName(),
-                'articlesCreated' => $import->getArticlesImportedCount(),
+                'articlesCreated' => $import->created,
+                'doisFilledIn' => $import->doisFilledIn,
+                'skipped' => $import->skipped,
                 'user' => auth()->user() ? auth()->user()->name . ' ' . auth()->user()->email : 'guest',
             ]);
 
-            return redirect()->back()->with('success', 'File uploaded successfully');
+            return redirect()->back()->with('success', "File uploaded: {$import->created} created, {$import->doisFilledIn} updated with a DOI, {$import->skipped} skipped (already in the database).");
         } catch (\Throwable $e) {
             Log::error('File upload/import failed', [
                 'date' => now('America/Vancouver')->toDateString(),
@@ -64,7 +64,7 @@ class FileController extends Controller
         try {
             $data = $request->validated();
 
-            $query = Article::query();
+            $query = Article::query()->where('isApproved', true);
 
             if ($author = $data['author'] ?? '') {
                 $query->where('author', 'like', '%' . $author . '%');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\UniqueDoi;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ArticleStoreRequest extends FormRequest
@@ -44,12 +45,12 @@ class ArticleStoreRequest extends FormRequest
         return [
             'author' => 'required|string|max:255',
             'title' => 'required|string',
-            'year_published' => 'required|date_format:Y',
+            'year_published' => 'required|digits:4',
             'journal_name' => 'required|string',
             'keywords' => 'nullable|array',
             'keywords.*' => 'string',
             'abstract' => 'nullable|string',
-            'doi' => 'nullable|string|max:255',
+            'doi' => ['nullable', 'string', 'max:255', new UniqueDoi],
         ];
     }
 }

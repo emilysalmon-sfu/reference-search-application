@@ -4,8 +4,6 @@ use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
 use Laravel\Fortify\Features;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
-
 test('two factor challenge redirects to login when not authenticated', function () {
     if (! Features::canManageTwoFactorAuthentication()) {
         $this->markTestSkipped('Two-factor authentication is not enabled.');
@@ -44,4 +42,29 @@ test('two factor challenge can be rendered', function () {
         ->assertInertia(fn (Assert $page) => $page
             ->component('auth/two-factor-challenge')
         );
+});
+
+test('two factor challenge rejects an invalid recovery code', function () {
+    if (! Features::canManageTwoFactorAuthentication()) {
+        $this->markTestSkipped('Two-factor authentication is not enabled.');
+    }
+
+    $user = User::factory()->create();
+
+    $user->forceFill([
+        'two_factor_secret' => encrypt('test-secret'),
+        'two_factor_recovery_codes' => encrypt(json_encode(['code1', 'code2'])),
+        'two_factor_confirmed_at' => now(),
+    ])->save();
+
+    $this->post(route('login'), [
+        'email' => $user->email,
+        'password' => 'password',
+    ]);
+
+    $this->post(route('two-factor.login.store'), ['recovery_code' => 'wrong-code'])
+        ->assertRedirect(route('two-factor.login'))
+        ->assertSessionHasErrors('recovery_code');
+
+    $this->assertGuest();
 });

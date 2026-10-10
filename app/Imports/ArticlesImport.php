@@ -7,13 +7,18 @@ use App\Models\Config;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
+use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
-class ArticlesImport implements ToModel, WithChunkReading, WithHeadingRow, WithMultipleSheets, WithCalculatedFormulas
+class ArticlesImport implements SkipsEmptyRows, ToModel, WithChunkReading, WithHeadingRow, WithMultipleSheets, WithCalculatedFormulas
 {
-    private int $articlesImported = 0;
+    public int $created = 0;
+
+    public int $doisFilledIn = 0;
+
+    public int $skipped = 0;
 
     private Config $config;
 
@@ -62,7 +67,7 @@ class ArticlesImport implements ToModel, WithChunkReading, WithHeadingRow, WithM
                 ->all();
 
             $abstract = $row[$this->config->column_map['abstract'] ?? 'Abstract'] ?? null;
-            $doi = $row[$this->config->column_map['doi'] ?? 'DOI'] ?? null;
+            $doi = Article::normalizeDoi($row[$this->config->column_map['doi'] ?? 'DOI'] ?? null);
 
             $theme = $row[$this->config->column_map['theme'] ?? 'Theme'] ?? null;
             $sub_theme_1 = $row[$this->config->column_map['sub_theme_1'] ?? 'Sub-Theme 1'] ?? null;
@@ -70,28 +75,39 @@ class ArticlesImport implements ToModel, WithChunkReading, WithHeadingRow, WithM
             $country = $row[$this->config->column_map['country'] ?? 'Country'] ?? null;
             $type_of_study = $row[$this->config->column_map['type_of_study'] ?? 'Type'] ?? null;
 
-            $article = Article::firstOrCreate(
-                [
-                    'author' => $author,
-                    'title' => $title,
-                ],
-                [
-                    'year_published' => $year_published,
-                    'journal_name' => $journal_name,
-                    'keywords' => $keywords,
-                    'abstract' => $abstract,
-                    'doi' => $doi,
-                    'theme' => $theme ? ucwords((string) $theme) : null,
-                    'sub_theme_1' => $sub_theme_1 ? ucwords((string) $sub_theme_1) : null,
-                    'country' => $country ? ucwords((string) $country) : null,
-                    'type_of_study' => $type_of_study ? ucwords((string) $type_of_study) : null,
-                    'source' => Article::SOURCE_IMPORT,
-                ],
-            );
+            // The DOI identifies a paper. Author + title is the fallback, limited to
+            // articles without a DOI when the row has one (so its DOI can be filled in).
+            $existing = ($doi ? Article::firstWhere('doi', $doi) : null)
+                ?? Article::where('author', $author)->where('title', $title)
+                    ->when($doi, fn ($query) => $query->whereNull('doi'))
+                    ->first();
 
-            if ($article->wasRecentlyCreated) {
-                $this->articlesImported++;
+            if ($existing) {
+                if ($doi && ! $existing->doi) {
+                    $existing->update(['doi' => $doi]);
+                    $this->doisFilledIn++;
+                } else {
+                    $this->skipped++;
+                }
+
+                return $existing;
             }
+
+            $article = Article::create([
+                'author' => $author,
+                'title' => $title,
+                'year_published' => $year_published,
+                'journal_name' => $journal_name,
+                'keywords' => $keywords,
+                'abstract' => $abstract,
+                'doi' => $doi,
+                'theme' => $theme ? ucwords((string) $theme) : null,
+                'sub_theme_1' => $sub_theme_1 ? ucwords((string) $sub_theme_1) : null,
+                'country' => $country ? ucwords((string) $country) : null,
+                'type_of_study' => $type_of_study ? ucwords((string) $type_of_study) : null,
+                'source' => Article::SOURCE_IMPORT,
+            ]);
+            $this->created++;
 
             return $article;
         } catch (\Throwable $e) {
@@ -103,10 +119,5 @@ class ArticlesImport implements ToModel, WithChunkReading, WithHeadingRow, WithM
 
             return null;
         }
-    }
-
-    public function getArticlesImportedCount(): int
-    {
-        return $this->articlesImported;
     }
 }
