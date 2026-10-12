@@ -192,6 +192,8 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
         <div className="flex h-full flex-1 flex-col gap-4 p-4">
             <FlashMessages />
 
+            <h1 className="text-2xl font-bold text-foreground">Indigenous Management &amp; Organizational Studies Research Database</h1>
+
             {/* Suggestion Card & Framework Description */}
             <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <p className="text-base leading-relaxed text-muted-foreground md:max-w-4xl">
@@ -561,11 +563,11 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
 
     return (
         <>
-            <Head title="Article Search" />
+            <Head title="" />
             {auth.user ? (
                 <AppLayout breadcrumbs={breadcrumbs}>{content}</AppLayout>
             ) : (
-                <PublicLayout title="Article Search">{content}</PublicLayout>
+                <PublicLayout>{content}</PublicLayout>
             )}
         </>
     );

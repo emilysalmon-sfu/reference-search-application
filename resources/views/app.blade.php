@@ -1,3 +1,4 @@
+@php($seo = config('site.pages.'.$page['component']))
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @class(['dark' => ($appearance ?? 'system') == 'dark'])>
     <head>
@@ -30,7 +31,13 @@
             }
         </style>
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+        <title inertia>{{ $seo['title'] ?? config('site.title') }}</title>
+        @if ($seo)
+            @include('partials.seo')
+        @endif
+        @if (config('site.google_site_verification'))
+            <meta name="google-site-verification" content="{{ config('site.google_site_verification') }}">
+        @endif
 
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -44,6 +51,7 @@
         @inertiaHead
     </head>
     <body class="font-sans antialiased">
-        @inertia
+        {{-- What @inertia renders (no SSR), plus a static heading for crawlers that don't run JavaScript. React replaces it on mount. --}}
+        <div id="app" data-page="{{ json_encode($page) }}">@if ($seo)<h1>{{ $seo['title'] }}</h1><p>{{ $seo['description'] }}</p>@endif</div>
     </body>
 </html>
