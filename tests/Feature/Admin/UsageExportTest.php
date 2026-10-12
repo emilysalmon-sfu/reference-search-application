@@ -47,3 +47,15 @@ test('approvers cannot export', function () {
         ->get('/admin/usage/export?from=2026-10-01&to=2026-10-10')
         ->assertRedirect('/admin/dashboard');
 });
+
+test('visitor-typed values are written as text, never as formulas', function () {
+    $at = CarbonImmutable::parse('2026-10-02 12:00', 'America/Vancouver')->utc();
+    AnalyticsSearch::create(['params' => json_encode(['keywords' => '=HYPERLINK("https://evil.example","Open")']), 'result_count' => 0, 'searched_at' => $at]);
+
+    $path = tempnam(sys_get_temp_dir(), 'usage').'.xlsx';
+    file_put_contents($path, Excel::raw(new UsageExport(UsageReport::forRange('2026-10-01', '2026-10-10')->toArray()), \Maatwebsite\Excel\Excel::XLSX));
+    $cell = IOFactory::load($path)->getSheetByName('Searches')->getCell('B2');
+
+    expect($cell->getDataType())->toBe(\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING)
+        ->and($cell->getValue())->toBe('=HYPERLINK("https://evil.example","Open")');
+});

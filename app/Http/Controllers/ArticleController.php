@@ -140,8 +140,9 @@ class ArticleController extends Controller
         }
 
         // Picked up by TrackVisits after the response is sent (on the original request: a form
-        // request has its own copy of the attributes). Later pages are the same search.
-        if ((int) $request->query('page', 1) <= 1) {
+        // request has its own copy of the attributes). The search form never sends "page";
+        // pagination links always do (page=1 included), and those are the same search.
+        if (! $request->has('page')) {
             request()->attributes->set('analytics.search', ['filters' => $filters, 'count' => $totalArticleCount]);
         }
 

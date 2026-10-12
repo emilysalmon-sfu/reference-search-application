@@ -38,3 +38,15 @@ test('bot searches are not logged', function () {
 
     expect(AnalyticsSearch::count())->toBe(0);
 });
+
+test('going back to page 1 of the same search is not logged again', function () {
+    browse('/articles/search?title=balance&page=1');
+
+    expect(AnalyticsSearch::count())->toBe(0);
+});
+
+test('country searches are grouped regardless of case', function () {
+    browse('/articles/search?country=Canada');
+
+    expect(AnalyticsSearch::sole()->params)->toBe('{"country":"canada"}');
+});

@@ -15,8 +15,8 @@ class Analytics
 {
     public const TIMEZONE = 'America/Vancouver';
 
-    /** Search fields compared case-insensitively, so they are stored lowercased. */
-    private const FREE_TEXT_PARAMS = ['keywords', 'title', 'author', 'abstract', 'journal'];
+    /** Typed (not picked from a list) search fields: stored lowercased so "Canada" and "canada" group together. */
+    private const FREE_TEXT_PARAMS = ['keywords', 'title', 'author', 'abstract', 'journal', 'country'];
 
     /**
      * sha256(daily salt + ip + user agent). The salt changes every Vancouver day and old
