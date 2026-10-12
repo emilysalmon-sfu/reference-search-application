@@ -6,18 +6,6 @@ use App\Rules\UniqueDoi;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-/** Inserts a row directly, bypassing the model's DOI normalization. */
-function insertLegacyArticle(string $doi, bool $approved = true): int
-{
-    return DB::table('articles')->insertGetId([
-        'author' => 'Legacy, A.',
-        'title' => 'Legacy title',
-        'journal_name' => 'Old Journal',
-        'doi' => $doi,
-        'isApproved' => $approved,
-    ]);
-}
-
 test('dois are normalized', function (?string $input, ?string $expected) {
     expect(Article::normalizeDoi($input))->toBe($expected);
 })->with([

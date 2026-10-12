@@ -102,3 +102,15 @@ function spreadsheetUpload(array $rows, string $sheetName = 'Sheet1'): UploadedF
 
     return new UploadedFile($path, 'articles.xlsx', null, null, true);
 }
+
+/** Inserts a row directly, bypassing the model's DOI normalization. */
+function insertLegacyArticle(string $doi, bool $approved = true): int
+{
+    return DB::table('articles')->insertGetId([
+        'author' => 'Legacy, A.',
+        'title' => 'Legacy title',
+        'journal_name' => 'Old Journal',
+        'doi' => $doi,
+        'isApproved' => $approved,
+    ]);
+}
