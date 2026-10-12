@@ -3,7 +3,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } f
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
-import { usageIndex } from '@/routes';
+import { usageExport, usageIndex } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import { endOfQuarter, format, startOfQuarter, startOfYear, subDays, subQuarters } from 'date-fns';
@@ -224,7 +224,7 @@ export default function Usage({ report }: { report: UsageReport }) {
                         Compared with {report.previous_from} to {report.previous_to}
                     </p>
                     <a
-                        href={`/admin/usage/export?from=${report.from}&to=${report.to}`}
+                        href={usageExport.url({ query: { from: report.from, to: report.to } })}
                         className="ml-auto inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium hover:bg-accent"
                     >
                         <Download className="h-4 w-4" /> Export to Excel

@@ -65,6 +65,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
 
         Route::controller(UsageController::class)->group(function () {
             Route::get('usage', 'index')->name('usageIndex');
+            Route::get('usage/export', 'export')->name('usageExport');
         });
     });
     Route::controller(ArticleController::class)->group(function () {

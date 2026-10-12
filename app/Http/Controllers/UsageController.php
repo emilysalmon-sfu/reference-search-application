@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Analytics\Analytics;
 use App\Analytics\UsageReport;
+use App\Exports\UsageExport;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UsageController extends Controller
 {
@@ -14,6 +16,13 @@ class UsageController extends Controller
         return Inertia::render('Usage/index', [
             'report' => $this->report($request)->toArray(),
         ]);
+    }
+
+    public function export(Request $request)
+    {
+        $report = $this->report($request)->toArray();
+
+        return Excel::download(new UsageExport($report), "usage-report_{$report['from']}_to_{$report['to']}.xlsx");
     }
 
     /**
