@@ -10,7 +10,8 @@ test('the home page html carries seo metadata without javascript', function () {
         ->toContain('<meta name="twitter:card" content="summary_large_image">')
         ->toContain('<h1>IndigiMOS: Indigenous Management &amp; Organizational Studies Research Database</h1>')
         ->toContain('"@type":"WebSite"')->toContain('"@type":"Dataset"')->toContain('"@type":"Organization"')
-        ->toContain('"urlTemplate":"http://localhost/articles/search?keywords={search_term_string}"');
+        ->toContain('"urlTemplate":"http://localhost/articles/search?keywords={search_term_string}"')
+        ->toContain('"logo":"http://localhost/logo.png"');
 });
 
 test('other public pages get their own title and canonical but no json-ld', function () {

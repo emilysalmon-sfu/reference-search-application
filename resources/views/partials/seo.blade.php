@@ -39,7 +39,7 @@
                 '@type' => 'Organization',
                 'name' => config('site.name'),
                 'url' => url('/'),
-                'logo' => asset('logo.svg'),
+                'logo' => asset('logo.png'),
             ],
         ],
         ];

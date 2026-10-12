@@ -1,0 +1,65 @@
+# IndigiMOS
+
+> IndigiMOS (www.indigimos.com) is a living, searchable database of Indigenous Management and Organizational Studies research. It makes Indigenous-focused scholarship more visible, accessible and connected across disciplines, institutions and communities, for students, scholars and practitioners.
+
+The site's name, Shelh tst, kws t'akw' tst, means "your path back home". It was suggested and articulated by Luschiim and Qwustenuxun, respected Quw'utsun advisors. Visitors can suggest additional sources, including their own published work, so the database keeps growing.
+
+## Who is behind it
+
+- Led by Emily Salmon, Beedie School of Business, Simon Fraser University (SFU).
+- Articles are organized with the research framework from Salmon, Chavez & Murphy (2023), "Navigating Indigenous management and organizational studies research": https://doi.org/10.5465/annals.2021.0132
+- Funded by the Social Sciences and Humanities Research Council of Canada (SSHRC).
+- Partners: SFU Beedie School of Business, Balance Co-Lab (https://balancecolab.com), SSHRC, and the Gustavson School of Business at the University of Victoria.
+
+## Themes
+
+Each article belongs to one primary theme and subtheme (many speak to several). Use the theme and subtheme names below as search values.
+
+- **Indigenous Communities** (framework: Indigenous Ways of Being)
+  - Indigenous Knowledge: place-based, holistic, evolving knowledge systems and the challenges of translating and ethically using them.
+  - Culture & Identity: how Indigenous cultural values and identities shape sensemaking, behaviour and organization.
+  - Governance Systems: Indigenous governance as resilient, value-driven, multi-criteria decision making, often around natural resources.
+- **Indigenous Organizing**
+  - Entrepreneurship: enterprises that integrate community values, social and environmental purpose, and diverse measures of success.
+  - Leadership: relational, holistic, culturally grounded leadership that sustains community wellbeing.
+  - Indigenous Management: managerial practices and organizational logics that reflect Indigenous worldviews.
+- **Indigenous Relating**
+  - State Interactions: how colonial histories, policy and state institutions shape Indigenous governance and development, and Indigenous responses.
+  - Firm Interactions: relationships between Indigenous communities and businesses, from conflict to partnership and co-management.
+  - Economic Development: self-determined, culturally grounded and sustainable economic futures for Indigenous Nations.
+- **Academic Implications**
+  - Management Theory & Methods: research practices, methodologies and theory for ethical, community-engaged scholarship.
+  - University Administration: teaching and the institutional structures that shape Indigenous scholarship.
+
+## Searching
+
+Search results are a plain GET page, so search links can be built directly:
+
+    https://www.indigimos.com/articles/search?<parameters>
+
+All parameters are optional and combined with AND. Text parameters match anywhere in the field and ignore case.
+
+- `keywords`: article keywords
+- `title`: words in the title
+- `author`: author name
+- `abstract`: words in the abstract
+- `journal`: journal name
+- `country`: country of study
+- `type_of_study`: type of study (Empirical, Conceptual, Historical Analysis, Opinion, Lit Review, Meta Analysis)
+- `theme`: theme name (see Themes)
+- `subtheme`: subtheme name (see Themes)
+- `year_from`, `year_to`: publication year range (4-digit years)
+
+Examples:
+
+- Leadership research since 2015: https://www.indigimos.com/articles/search?subtheme=Leadership&year_from=2015
+- Indigenous entrepreneurship in Canada: https://www.indigimos.com/articles/search?theme=Indigenous%20Organizing&subtheme=Entrepreneurship&country=Canada
+- Keyword search: https://www.indigimos.com/articles/search?keywords=land%20rights
+
+Results show 10 articles per page; add `page=2`, `page=3` and so on for more. Each result links to the article through its DOI (https://doi.org/...).
+
+## Pages
+
+- Search: https://www.indigimos.com/
+- Introduction and framework: https://www.indigimos.com/introduction
+- Privacy: https://www.indigimos.com/privacy
