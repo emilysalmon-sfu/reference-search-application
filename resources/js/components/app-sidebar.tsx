@@ -12,10 +12,10 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard, fileUploadIndex, articlesIndex, configIndex, articlesList, usersIndex, approvalsIndex, feedbacksIndex } from '@/routes';
+import { dashboard, usageIndex, fileUploadIndex, articlesIndex, configIndex, articlesList, usersIndex, approvalsIndex, feedbacksIndex } from '@/routes';
 import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Upload, ListCheck, User, Headset, NotebookPen, Settings, Search, MessageCircleWarning, Mail } from 'lucide-react';
+import { BookOpen, ChartColumn, Folder, LayoutGrid, Upload, ListCheck, User, Headset, NotebookPen, Settings, Search, MessageCircleWarning, Mail } from 'lucide-react';
 import { useState } from 'react';
 import AppLogo from './app-logo';
 import {
@@ -32,6 +32,12 @@ const allMainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+    {
+        title: 'Usage',
+        href: usageIndex(),
+        icon: ChartColumn,
+        adminOnly: true,
     },
     {
         title: 'Search',
