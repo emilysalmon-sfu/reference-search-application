@@ -2,15 +2,13 @@
 
 use App\Models\Article;
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
     /**
-     * Stores every DOI in canonical form, then makes DOIs unique.
-     * Fails with "Duplicate entry" if two articles share a DOI: resolve those first.
+     * Stores every DOI in canonical form so duplicate checks (and `articles:duplicates`) see one spelling per DOI.
+     * The unique index comes in a later migration, once the duplicates have been cleaned up.
      */
     public function up(): void
     {
@@ -21,16 +19,12 @@ return new class extends Migration
                 DB::table('articles')->where('id', $article->id)->update(['doi' => $doi]);
             }
         });
-
-        Schema::table('articles', function (Blueprint $table) {
-            $table->unique('doi');
-        });
     }
 
+    /**
+     * Normalization is not reversible: the original spellings are not kept.
+     */
     public function down(): void
     {
-        Schema::table('articles', function (Blueprint $table) {
-            $table->dropUnique(['doi']);
-        });
     }
 };

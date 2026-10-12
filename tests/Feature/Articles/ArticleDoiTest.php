@@ -3,7 +3,6 @@
 use App\Models\Article;
 use App\Models\User;
 use App\Rules\UniqueDoi;
-use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -154,30 +153,20 @@ test('the unique doi rule ignores blank values', function (?string $value) {
     expect($validator->passes())->toBeTrue();
 })->with(['empty' => [''], 'spaces' => ['   '], 'null' => [null]]);
 
-test('the database rejects two articles with the same doi', function () {
-    Article::factory()->create(['doi' => '10.1000/abc']);
-
-    expect(fn () => insertLegacyArticle('10.1000/abc'))->toThrow(UniqueConstraintViolationException::class);
-});
-
-test('the doi index migration normalizes existing dois first', function () {
-    $migration = require database_path('migrations/2026_10_09_000000_add_unique_index_to_articles_doi.php');
-    $migration->down();
+test('the doi migration normalizes existing dois without adding a unique index', function () {
+    $migration = require database_path('migrations/2026_10_09_000000_normalize_article_dois.php');
 
     $url = insertLegacyArticle('https://doi.org/10.1000/ABC');
     $blank = insertLegacyArticle('   ');
-    $clean = insertLegacyArticle('10.1000/xyz');
-    $brokenA = insertLegacyArticle('#REF!');
-    $brokenB = insertLegacyArticle('#REF!');
+    $corrupted = insertLegacyArticle('10.1002/cjas.70076Digital Object Identifier (DOI)');
+    $duplicate = insertLegacyArticle('10.1000/abc');
 
     $migration->up();
 
     expect(DB::table('articles')->orderBy('id')->pluck('doi', 'id')->all())->toBe([
         $url => '10.1000/abc',
         $blank => null,
-        $clean => '10.1000/xyz',
-        $brokenA => null,
-        $brokenB => null,
+        $corrupted => '10.1002/cjas.70076',
+        $duplicate => '10.1000/abc',
     ]);
-    expect(fn () => insertLegacyArticle('10.1000/abc'))->toThrow(UniqueConstraintViolationException::class);
 });
