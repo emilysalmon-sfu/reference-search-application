@@ -38,6 +38,12 @@ test('views within 30 minutes extend the visit and a view after 31 minutes start
     expect(AnalyticsVisit::count())->toBe(2);
 });
 
+test('every public page is tracked', function (string $uri) {
+    browse($uri)->assertOk();
+
+    expect(AnalyticsVisit::count())->toBe(1);
+})->with(['/', '/articles/search', '/introduction', '/privacy']);
+
 test('inertia navigation counts as a page view', function () {
     browse('/introduction', inertiaHeaders())->assertOk();
 

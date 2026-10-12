@@ -96,6 +96,10 @@ Route::get('/introduction', function () {
     return Inertia::render('introduction');
 })->name('introduction');
 
+Route::get('/privacy', function () {
+    return Inertia::render('privacy');
+})->name('privacy');
+
 Route::controller(FeedbackController::class)->group(function () {
     Route::post('report-feedback', 'store')->name('reportFeedback');
 });

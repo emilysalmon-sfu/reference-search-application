@@ -10,6 +10,7 @@ test('the public pages render', function (string $uri, string $component) {
 })->with([
     'articles' => ['/', 'articles'],
     'introduction' => ['/introduction', 'introduction'],
+    'privacy' => ['/privacy', 'privacy'],
 ]);
 
 test('the documentation page is for signed-in users', function () {
