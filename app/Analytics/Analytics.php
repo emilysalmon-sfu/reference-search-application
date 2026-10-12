@@ -3,6 +3,7 @@
 namespace App\Analytics;
 
 use App\Models\AnalyticsSalt;
+use App\Models\AnalyticsVisit;
 use DeviceDetector\DeviceDetector;
 use Illuminate\Http\Request;
 
@@ -29,6 +30,46 @@ class Analytics
         }
 
         return hash('sha256', $salt->salt.$request->ip().$request->userAgent());
+    }
+
+    /**
+     * The visitor's current visit: the one seen in the last 30 minutes (now touched), or a new one.
+     * Null for bots, which are never counted.
+     */
+    public static function currentVisit(Request $request): ?AnalyticsVisit
+    {
+        $device = self::device($request->userAgent());
+
+        if ($device === null) {
+            return null;
+        }
+
+        $hash = self::visitorHash($request);
+
+        // ponytail: two simultaneous first requests can both start a visit; harmless at this traffic.
+        $visit = AnalyticsVisit::where('visitor_hash', $hash)
+            ->where('last_seen_at', '>=', now()->subMinutes(30))
+            ->latest('last_seen_at')
+            ->first();
+
+        if ($visit) {
+            $visit->update(['last_seen_at' => now()]);
+
+            return $visit;
+        }
+
+        $country = self::country($request);
+
+        return AnalyticsVisit::create([
+            ...self::source($request),
+            'visitor_hash' => $hash,
+            'started_at' => now(),
+            'last_seen_at' => now(),
+            'country_code' => $country,
+            'region' => self::region($country),
+            'device_type' => $device,
+            'landing_path' => '/'.ltrim($request->path(), '/'),
+        ]);
     }
 
     /**
