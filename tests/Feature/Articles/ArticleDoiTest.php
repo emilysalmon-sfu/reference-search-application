@@ -34,6 +34,12 @@ test('dois are normalized', function (?string $input, ?string $expected) {
     'excel error' => ['#REF!', null],
     'n/a' => ['N/A', null],
     'free text' => ['not on doi.org yet', null],
+    'corrupted live value' => ['10.1002/cjas.70076Digital Object Identifier (DOI)', '10.1002/cjas.70076'],
+    'trailing words' => ['10.1111/joms.13266 (accessed 2024)', '10.1111/joms.13266'],
+    'uppercase with prefix' => ['DOI: 10.1111/JOMS.13266', '10.1111/joms.13266'],
+    'no suffix' => ['10.1000/', null],
+    'no slash' => ['10.1000', null],
+    'short registrant' => ['10.12/abc', null],
 ]);
 
 test('the model stores dois in normalized form', function () {
