@@ -11,7 +11,7 @@ class AnalyticsVisit extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'started_at' => 'datetime',
-        'last_seen_at' => 'datetime',
+        'started_at' => 'immutable_datetime',
+        'last_seen_at' => 'immutable_datetime',
     ];
 }

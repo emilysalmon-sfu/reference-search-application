@@ -11,6 +11,6 @@ class AnalyticsSearch extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'searched_at' => 'datetime',
+        'searched_at' => 'immutable_datetime',
     ];
 }
