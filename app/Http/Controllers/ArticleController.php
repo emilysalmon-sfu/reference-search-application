@@ -139,6 +139,12 @@ class ArticleController extends Controller
             $totalArticleCount = 0;
         }
 
+        // Picked up by TrackVisits after the response is sent (on the original request: a form
+        // request has its own copy of the attributes). Later pages are the same search.
+        if ((int) $request->query('page', 1) <= 1) {
+            request()->attributes->set('analytics.search', ['filters' => $filters, 'count' => $totalArticleCount]);
+        }
+
         try {
             $articles = $query
                 ->orderBy('year_published')

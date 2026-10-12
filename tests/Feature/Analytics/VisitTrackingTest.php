@@ -7,13 +7,6 @@ use App\Models\AnalyticsSearch;
 use App\Models\AnalyticsVisit;
 use Illuminate\Support\Facades\Exceptions;
 
-function browse(string $uri, array $headers = [], string $ip = '203.0.113.7')
-{
-    return test()->withServerVariables(['REMOTE_ADDR' => $ip])
-        ->withHeaders(['User-Agent' => DESKTOP_UA, ...$headers])
-        ->get($uri);
-}
-
 function inertiaHeaders(): array
 {
     return ['X-Inertia' => 'true', 'X-Inertia-Version' => (string) app(HandleInertiaRequests::class)->version(request())];

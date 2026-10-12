@@ -127,3 +127,13 @@ function analyticsRequest(string $uri = '/', array $server = []): Illuminate\Htt
 {
     return Illuminate\Http\Request::create($uri, 'GET', server: ['REMOTE_ADDR' => '203.0.113.7', 'HTTP_USER_AGENT' => DESKTOP_UA, ...$server]);
 }
+
+/**
+ * A browser page view from a fixed IP, as the analytics middleware sees it.
+ */
+function browse(string $uri, array $headers = [], string $ip = '203.0.113.7')
+{
+    return test()->withServerVariables(['REMOTE_ADDR' => $ip])
+        ->withHeaders(['User-Agent' => DESKTOP_UA, ...$headers])
+        ->get($uri);
+}

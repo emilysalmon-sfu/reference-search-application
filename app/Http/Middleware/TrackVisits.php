@@ -26,7 +26,12 @@ class TrackVisits
         }
 
         try {
-            Analytics::currentVisit($request);
+            $visit = Analytics::currentVisit($request);
+            $search = $request->attributes->get('analytics.search');
+
+            if ($visit && $search) {
+                Analytics::logSearch($visit, $search['filters'], $search['count']);
+            }
         } catch (Throwable $e) {
             report($e);
         }

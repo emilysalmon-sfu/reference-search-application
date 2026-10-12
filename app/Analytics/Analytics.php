@@ -3,6 +3,7 @@
 namespace App\Analytics;
 
 use App\Models\AnalyticsSalt;
+use App\Models\AnalyticsSearch;
 use App\Models\AnalyticsVisit;
 use DeviceDetector\DeviceDetector;
 use Illuminate\Http\Request;
@@ -13,6 +14,9 @@ use Illuminate\Http\Request;
 class Analytics
 {
     public const TIMEZONE = 'America/Vancouver';
+
+    /** Search fields compared case-insensitively, so they are stored lowercased. */
+    private const FREE_TEXT_PARAMS = ['keywords', 'title', 'author', 'abstract', 'journal'];
 
     /**
      * sha256(daily salt + ip + user agent). The salt changes every Vancouver day and old
@@ -70,6 +74,48 @@ class Analytics
             'device_type' => $device,
             'landing_path' => '/'.ltrim($request->path(), '/'),
         ]);
+    }
+
+    /**
+     * Records a search with its total result count. Searches without any filter aren't recorded.
+     */
+    public static function logSearch(AnalyticsVisit $visit, array $filters, int $resultCount): void
+    {
+        $params = self::normalizeSearchParams($filters);
+
+        if ($params === []) {
+            return;
+        }
+
+        AnalyticsSearch::create([
+            'visit_id' => $visit->id,
+            'params' => json_encode($params, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
+            'result_count' => $resultCount,
+            'searched_at' => now(),
+        ]);
+    }
+
+    /**
+     * Non-empty params only, whitespace collapsed, free-text fields lowercased, sorted by name,
+     * so the same search always produces the same params. "subtheme" is dropped: the search
+     * controller has already copied it into "sub_theme_1".
+     */
+    public static function normalizeSearchParams(array $filters): array
+    {
+        unset($filters['subtheme']);
+        $params = [];
+
+        foreach ($filters as $key => $value) {
+            $value = is_scalar($value) ? trim(preg_replace('/\s+/u', ' ', (string) $value)) : '';
+
+            if ($value !== '') {
+                $params[$key] = in_array($key, self::FREE_TEXT_PARAMS, true) ? mb_strtolower($value) : $value;
+            }
+        }
+
+        ksort($params);
+
+        return $params;
     }
 
     /**
