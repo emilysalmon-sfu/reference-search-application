@@ -23,7 +23,11 @@ class UsageExport implements WithMultipleSheets
                 array_map(fn ($s) => [$s['metric'], $s['current'], $s['previous'], $s['change']], $r['summary'])),
             new UsageSheet('Location', ['Type', 'Name', 'Visits'], [
                 ...$rows('Region', $r['regions'], 'region'),
-                ...$rows('Country', $r['countries'], 'country_code'),
+                ...array_map(fn ($c) => [
+                    'Country',
+                    \Locale::getDisplayRegion('-'.$c['country_code'], 'en').' ('.$c['country_code'].')',
+                    $c['visits'],
+                ], $r['countries']),
             ]),
             new UsageSheet('Sources', ['Type', 'Name', 'Visits'], [
                 ...$rows('Source type', $r['source_types'], 'source_type'),

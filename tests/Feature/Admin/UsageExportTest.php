@@ -25,7 +25,7 @@ test('the export has six sheets with the expected headers and dashboard values',
     expect($book->getSheetNames())->toBe(['Summary', 'Location', 'Sources', 'Searches', 'No-result searches', 'Devices'])
         ->and($sheet('Summary')[0])->toBe(['Metric', 'This period', 'Previous period', 'Change %'])
         ->and($sheet('Summary')[1])->toBe(['Visits', 1, 0, null])
-        ->and($sheet('Location'))->toBe([['Type', 'Name', 'Visits'], ['Region', 'North America', 1], ['Country', 'CA', 1]])
+        ->and($sheet('Location'))->toBe([['Type', 'Name', 'Visits'], ['Region', 'North America', 1], ['Country', 'Canada (CA)', 1]])
         ->and($sheet('Sources'))->toBe([
             ['Type', 'Name', 'Visits'],
             ['Source type', 'campaign', 1],
