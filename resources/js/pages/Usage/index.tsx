@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
 import { Input } from '@/components/ui/input';
+import WorldMap from '@/components/world-map';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { usageExport, usageIndex } from '@/routes';
@@ -41,6 +42,8 @@ interface UsageReport {
 const breadcrumbs: BreadcrumbItem[] = [{ title: 'Usage', href: usageIndex().url }];
 
 const ymd = (date: Date) => format(date, 'yyyy-MM-dd');
+
+const countryName = new Intl.DisplayNames(['en'], { type: 'region' });
 
 function presets(): Record<string, { label: string; from: string; to: string }> {
     const today = new Date();
@@ -113,7 +116,19 @@ function Section({ title, children }: { title: string; children: React.ReactNode
     );
 }
 
-function Table({ title, headings, rows, emptyText = 'No data for this period.' }: { title: string; headings: string[]; rows: (string | number | null)[][]; emptyText?: string }) {
+function Table({
+    title,
+    headings,
+    rows,
+    emptyText = 'No data for this period.',
+    highlight,
+}: {
+    title: string;
+    headings: string[];
+    rows: (string | number | null)[][];
+    emptyText?: string;
+    highlight?: (row: (string | number | null)[]) => boolean;
+}) {
     return (
         <Card className="gap-2">
             <CardHeader className="pb-0">
@@ -135,7 +150,7 @@ function Table({ title, headings, rows, emptyText = 'No data for this period.' }
                         </thead>
                         <tbody>
                             {rows.map((row, r) => (
-                                <tr key={r} className="border-b last:border-0">
+                                <tr key={r} className={`border-b last:border-0 ${highlight?.(row) ? 'bg-muted/60 font-semibold' : ''}`}>
                                     {row.map((cell, i) => (
                                         <td key={i} className={`py-1.5 ${i > 0 ? 'text-right tabular-nums' : 'break-all'}`}>
                                             {cell ?? '-'}
@@ -182,7 +197,6 @@ export default function Usage({ report }: { report: UsageReport }) {
     const visit = (from: string, to: string) => router.get(usageIndex().url, { from, to }, { preserveScroll: true });
 
     const totalVisits = report.regions.reduce((sum, r) => sum + r.visits, 0);
-    const northAmerica = report.regions.find((r) => r.region === 'North America')?.visits ?? 0;
     const totalDevices = report.devices.reduce((sum, d) => sum + d.visits, 0);
     const parameterGroups = Object.entries(
         report.parameters.reduce<Record<string, UsageReport['parameters']>>((groups, p) => {
@@ -242,24 +256,28 @@ export default function Usage({ report }: { report: UsageReport }) {
                 </Section>
 
                 <Section title="Location">
-                    <div className="grid gap-4 lg:grid-cols-3">
+                    <div className="flex flex-col gap-4">
                         <Card className="gap-2">
                             <CardHeader className="pb-0">
-                                <CardTitle className="text-base">North America vs. rest of the world</CardTitle>
+                                <CardTitle className="text-base">Visits by country</CardTitle>
                             </CardHeader>
-                            <CardContent className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <div className="text-3xl font-bold">{share(northAmerica, totalVisits)}</div>
-                                    <p className="text-xs text-muted-foreground">North America ({northAmerica.toLocaleString()})</p>
-                                </div>
-                                <div>
-                                    <div className="text-3xl font-bold">{share(totalVisits - northAmerica, totalVisits)}</div>
-                                    <p className="text-xs text-muted-foreground">Rest of the world ({(totalVisits - northAmerica).toLocaleString()})</p>
-                                </div>
+                            <CardContent>
+                                <WorldMap countries={report.countries} />
                             </CardContent>
                         </Card>
-                        <Table title="Visits by region" headings={['Region', 'Visits']} rows={report.regions.map((r) => [r.region, r.visits])} />
-                        <Table title="Top countries" headings={['Country', 'Visits']} rows={report.countries.slice(0, 10).map((c) => [c.country_code, c.visits])} />
+                        <div className="grid gap-4 lg:grid-cols-2">
+                            <Table
+                                title="Visits by region"
+                                headings={['Region', 'Visits', 'Share']}
+                                rows={report.regions.map((r) => [r.region, r.visits, share(r.visits, totalVisits)])}
+                                highlight={(row) => row[0] === 'North America'}
+                            />
+                            <Table
+                                title="Top countries"
+                                headings={['Country', 'Visits', 'Share']}
+                                rows={report.countries.slice(0, 10).map((c) => [countryName.of(c.country_code) ?? c.country_code, c.visits, share(c.visits, totalVisits)])}
+                            />
+                        </div>
                     </div>
                 </Section>
 
