@@ -48,7 +48,7 @@
 
         @if ($page['component'] === 'articles')
             {{-- The framework image is the search page's largest element: fetch it before the JavaScript renders it. --}}
-            <link rel="preload" as="image" href="{{ Vite::asset('resources/js/assets/framework-image.png') }}" fetchpriority="high">
+            <link rel="preload" as="image" href="{{ Vite::asset('resources/js/assets/framework-image.webp') }}" fetchpriority="high">
         @endif
 
         @viteReactRefresh

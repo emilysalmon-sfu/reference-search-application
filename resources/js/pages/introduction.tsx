@@ -1,6 +1,6 @@
 import PublicLayout from '@/layouts/public-layout';
 import { Head } from '@inertiajs/react';
-import frameworkImage from '@/assets/framework-image.png';
+import frameworkImage from '@/assets/framework-image.webp';
 
 export default function Introduction() {
     return (

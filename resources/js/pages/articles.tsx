@@ -13,7 +13,7 @@ import Pagination from '@/components/ui/pagination';
 import SuggestArticleModal from '@/components/SuggestArticleModal';
 import FlashMessages from '@/components/ui/flash-messages';
 import ReportButton from '@/components/report-button';
-import frameworkImage from '@/assets/framework-image.png';
+import frameworkImage from '@/assets/framework-image.webp';
 
 type PaginatedArticles = {
     data: ArticleType[];

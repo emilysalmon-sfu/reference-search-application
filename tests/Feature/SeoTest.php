@@ -40,10 +40,31 @@ test('fonts load with font-display swap', function () {
 });
 
 test('the search page preloads its framework image at high priority', function () {
-    $image = Illuminate\Support\Facades\Vite::asset('resources/js/assets/framework-image.png');
+    // The suite's Vite fake returns "" for every URL; wrap it so asset() echoes the path it was asked for.
+    Illuminate\Support\Facades\Vite::swap(new class(app(Illuminate\Foundation\Vite::class))
+    {
+        public function __construct(private object $fake)
+        {
+        }
+
+        public function asset(string $asset): string
+        {
+            return '/build/'.$asset;
+        }
+
+        public function __invoke(...$arguments)
+        {
+            return ($this->fake)(...$arguments);
+        }
+
+        public function __call($method, $parameters)
+        {
+            return $this->fake->{$method}(...$parameters);
+        }
+    });
 
     expect($this->get('/')->getContent())
-        ->toContain('<link rel="preload" as="image" href="'.$image.'" fetchpriority="high">');
+        ->toContain('<link rel="preload" as="image" href="/build/resources/js/assets/framework-image.webp" fetchpriority="high">');
 
     expect($this->get('/introduction')->getContent())->not->toContain('rel="preload" as="image"');
 });
