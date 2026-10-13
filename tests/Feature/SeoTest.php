@@ -33,3 +33,17 @@ test('the search console tag renders only when configured', function () {
 
     expect($this->get('/')->getContent())->toContain('<meta name="google-site-verification" content="abc123">');
 });
+
+test('fonts load with font-display swap', function () {
+    expect($this->get('/')->getContent())
+        ->toContain('https://fonts.bunny.net/css?family=instrument-sans:400,500,600&amp;display=swap');
+});
+
+test('the search page preloads its framework image at high priority', function () {
+    $image = Illuminate\Support\Facades\Vite::asset('resources/js/assets/framework-image.png');
+
+    expect($this->get('/')->getContent())
+        ->toContain('<link rel="preload" as="image" href="'.$image.'" fetchpriority="high">');
+
+    expect($this->get('/introduction')->getContent())->not->toContain('rel="preload" as="image"');
+});

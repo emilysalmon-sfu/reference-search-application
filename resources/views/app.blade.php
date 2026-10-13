@@ -44,7 +44,12 @@
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600&amp;display=swap" rel="stylesheet" />
+
+        @if ($page['component'] === 'articles')
+            {{-- The framework image is the search page's largest element: fetch it before the JavaScript renders it. --}}
+            <link rel="preload" as="image" href="{{ Vite::asset('resources/js/assets/framework-image.png') }}" fetchpriority="high">
+        @endif
 
         @viteReactRefresh
         @vite(['resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])

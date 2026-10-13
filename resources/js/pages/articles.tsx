@@ -471,6 +471,7 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                     src={frameworkImage}
                     width={1142}
                     height={896}
+                    fetchPriority="high"
                     alt="Research Framework Illustration"
                     className="max-w-md h-auto rounded-lg shadow-md"
                 />
