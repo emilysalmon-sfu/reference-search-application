@@ -235,10 +235,11 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
             >
                 <div className="grid gap-4 md:grid-cols-4">
                     <div className="space-y-1">
-                        <label className="text-foreground block text-xs font-medium">
+                        <label htmlFor="search-author" className="text-foreground block text-xs font-medium">
                             Author
                         </label>
                         <input
+                            id="search-author"
                             type="text"
                             value={data.author ?? ''}
                             onChange={(e) => setData('author', e.target.value)}
@@ -248,10 +249,11 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                     </div>
 
                     <div className="space-y-1">
-                        <label className="text-foreground block text-xs font-medium">
+                        <label htmlFor="search-title" className="text-foreground block text-xs font-medium">
                             Title
                         </label>
                         <input
+                            id="search-title"
                             type="text"
                             value={data.title ?? ''}
                             onChange={(e) => setData('title', e.target.value)}
@@ -261,10 +263,11 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                     </div>
 
                     <div className="space-y-1">
-                        <label className="text-foreground block text-xs font-medium">
+                        <label htmlFor="search-journal" className="text-foreground block text-xs font-medium">
                             Journal
                         </label>
                         <input
+                            id="search-journal"
                             type="text"
                             value={data.journal ?? ''}
                             onChange={(e) => setData('journal', e.target.value)}
@@ -274,10 +277,11 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                     </div>
 
                     <div className="space-y-1">
-                        <label className="text-foreground block text-xs font-medium">
+                        <label htmlFor="search-keywords" className="text-foreground block text-xs font-medium">
                             Keywords
                         </label>
                         <input
+                            id="search-keywords"
                             type="text"
                             value={data.keywords ?? ''}
                             onChange={(e) => setData('keywords', e.target.value)}
@@ -287,10 +291,11 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                     </div>
 
                     <div className="space-y-1">
-                        <label className="text-foreground block text-xs font-medium">
+                        <label htmlFor="search-country" className="text-foreground block text-xs font-medium">
                             Country
                         </label>
                         <input
+                            id="search-country"
                             type="text"
                             value={data.country ?? ''}
                             onChange={(e) => setData('country', e.target.value)}
@@ -300,10 +305,11 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                     </div>
 
                     <div className="space-y-1">
-                        <label className="text-foreground block text-xs font-medium">
+                        <label htmlFor="search-type-of-study" className="text-foreground block text-xs font-medium">
                             Type of Study
                         </label>
                         <select
+                            id="search-type-of-study"
                             value={data.type_of_study ?? ''}
                             onChange={(e) => setData('type_of_study', e.target.value)}
                             className="w-full rounded-md border bg-background px-3 py-2 text-sm"
@@ -318,10 +324,11 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                     </div>
 
                     <div className="space-y-1">
-                        <label className="text-foreground block text-xs font-medium">
+                        <label htmlFor="search-theme" className="text-foreground block text-xs font-medium">
                             Theme
                         </label>
                         <select
+                            id="search-theme"
                             value={data.theme ?? ''}
                             onChange={(e) => {
                                 setData('theme', e.target.value);
@@ -339,10 +346,11 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                     </div>
 
                     <div className="space-y-1">
-                        <label className="text-foreground block text-xs font-medium">
+                        <label htmlFor="search-subtheme" className="text-foreground block text-xs font-medium">
                             Subtheme
                         </label>
                         <select
+                            id="search-subtheme"
                             value={data.subtheme ?? ''}
                             onChange={(e) => setData('subtheme', e.target.value)}
                             className="w-full rounded-md border bg-background px-3 py-2 text-sm"
@@ -358,10 +366,11 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                     </div>
 
                     <div className="space-y-1">
-                        <label className="text-foreground block text-xs font-medium">
+                        <label htmlFor="search-year-from" className="text-foreground block text-xs font-medium">
                             Year From
                         </label>
                         <input
+                            id="search-year-from"
                             type="number"
                             inputMode="numeric"
                             min={1800}
@@ -374,10 +383,11 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                     </div>
 
                     <div className="space-y-1">
-                        <label className="text-foreground block text-xs font-medium">
+                        <label htmlFor="search-year-to" className="text-foreground block text-xs font-medium">
                             Year To
                         </label>
                         <input
+                            id="search-year-to"
                             type="number"
                             inputMode="numeric"
                             min={1800}
@@ -390,10 +400,11 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                     </div>
 
                     <div className="space-y-1 md:col-span-2">
-                        <label className="text-foreground block text-xs font-medium">
+                        <label htmlFor="search-abstract" className="text-foreground block text-xs font-medium">
                             Abstract
                         </label>
                         <input
+                            id="search-abstract"
                             type="text"
                             value={data.abstract ?? ''}
                             onChange={(e) => setData('abstract', e.target.value)}
