@@ -496,7 +496,7 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                             <th className="border border-border bg-[#41665B] p-4 text-left font-semibold text-white">
                                 Indigenous Ways of Being
                             </th>
-                            <th className="border border-border bg-[#CA7447] p-4 text-left font-semibold text-white">
+                            <th className="border border-border bg-[#CA7447] p-4 text-left font-semibold text-gray-900">
                                 Indigenous Organizing
                             </th>
                             <th className="border border-border bg-[#DECD9F] p-4 text-left font-semibold text-gray-900">
@@ -509,12 +509,12 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                     </thead>
                     <tbody>
                         <tr>
-                            <td className="border border-border bg-[#5D8A7E] p-4 align-top text-sm text-white">
+                            <td className="border border-border bg-[#557E73] p-4 align-top text-sm text-white">
                                 <span className="mb-2 block font-semibold text-white">Indigenous knowledges</span>
                                 research highlights place-based, holistic, and evolving knowledge systems that support sustainability, risk management, and adaptation, while grappling with challenges of translation, appropriation, and ethical use within dominant Western scientific and institutional frameworks.
                             </td>
-                            <td className="border border-border bg-[#D9937A] p-4 align-top text-sm text-white">
-                                <span className="mb-2 block font-semibold text-white">Indigenous entrepreneurship</span>
+                            <td className="border border-border bg-[#D9937A] p-4 align-top text-sm text-gray-900">
+                                <span className="mb-2 block font-semibold text-gray-900">Indigenous entrepreneurship</span>
                                 studies emphasize enterprise forms that integrate community values, social and environmental purpose, and diverse measures of success, while navigating structural constraints rooted in colonial legacies, policy environments, and market systems.
                             </td>
                             <td className="border border-border bg-[#E8DBBE] p-4 align-top text-sm text-gray-900">
@@ -527,12 +527,12 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                             </td>
                         </tr>
                         <tr>
-                            <td className="border border-border bg-[#5D8A7E] p-4 align-top text-sm text-white">
+                            <td className="border border-border bg-[#557E73] p-4 align-top text-sm text-white">
                                 <span className="mb-2 block font-semibold text-white">Cultural values &amp; identity</span>
                                 research explores how Indigenous cultural values and identities shape sensemaking, behavior, and social organization, while also examining tensions arising from comparison with non-Indigenous cultures and the commodification, misrepresentation, or remediation of Indigenous identities in market contexts.
                             </td>
-                            <td className="border border-border bg-[#D9937A] p-4 align-top text-sm text-white">
-                                <span className="mb-2 block font-semibold text-white">Indigenous leadership</span>
+                            <td className="border border-border bg-[#D9937A] p-4 align-top text-sm text-gray-900">
+                                <span className="mb-2 block font-semibold text-gray-900">Indigenous leadership</span>
                                 conceptualizes leadership practices and motivations as relational, holistic, and culturally grounded, highlighting practices that sustain community wellbeing, steward values across generations, and contend with the pressures of operating within bicultural and often discriminatory contexts.
                             </td>
                             <td className="border border-border bg-[#E8DBBE] p-4 align-top text-sm text-gray-900">
@@ -544,12 +544,12 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                             </td>
                         </tr>
                         <tr>
-                            <td className="border border-border bg-[#5D8A7E] p-4 align-top text-sm text-white">
+                            <td className="border border-border bg-[#557E73] p-4 align-top text-sm text-white">
                                 <span className="mb-2 block font-semibold text-white">Indigenous governance</span>
                                 literature examines Indigenous governance systems as resilient, value-driven, and multicriteria decision-making arrangements that integrate cultural, social, economic, and ecological considerations, particularly in relation to natural resource management and economic organization.
                             </td>
-                            <td className="border border-border bg-[#D9937A] p-4 align-top text-sm text-white">
-                                <span className="mb-2 block font-semibold text-white">Indigenous management</span>
+                            <td className="border border-border bg-[#D9937A] p-4 align-top text-sm text-gray-900">
+                                <span className="mb-2 block font-semibold text-gray-900">Indigenous management</span>
                                 research explores distinct managerial practices and organizational logics that reflect Indigenous worldviews, including collective decision-making, strategic planning, and the integration of cultural values into everyday organizational life.
                             </td>
                             <td className="border border-border bg-[#E8DBBE] p-4 align-top text-sm text-gray-900">
