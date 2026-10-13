@@ -17,6 +17,8 @@ export default function Footer() {
                         >
                             <img
                                 src={sfuBusinessLogo}
+                                width={1831}
+                                height={465}
                                 alt="SFU Beedie School of Business"
                                 className="h-12 md:h-16 w-auto object-contain dark:bg-white dark:rounded-md dark:p-1"
                             />
@@ -29,6 +31,8 @@ export default function Footer() {
                         >
                             <img
                                 src={balanceCoLabLogo}
+                                width={1462}
+                                height={1034}
                                 alt="Balance Co-Lab"
                                 className="h-12 md:h-16 w-auto object-contain dark:bg-white dark:rounded-md dark:p-1"
                             />
@@ -41,6 +45,8 @@ export default function Footer() {
                         >
                             <img
                                 src={sshrcLogo}
+                                width={708}
+                                height={89}
                                 alt="SSHRC"
                                 className="h-12 md:h-16 w-auto object-contain dark:bg-white dark:rounded-md dark:p-1"
                             />
@@ -53,6 +59,8 @@ export default function Footer() {
                         >
                             <img
                                 src={gustavsonLogo}
+                                width={1920}
+                                height={825}
                                 alt="Gustavson School of Business"
                                 className="h-12 md:h-16 w-auto object-contain dark:bg-white dark:rounded-md dark:p-1"
                             />

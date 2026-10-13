@@ -469,6 +469,8 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
             <div className="flex justify-center">
                 <img
                     src={frameworkImage}
+                    width={1142}
+                    height={896}
                     alt="Research Framework Illustration"
                     className="max-w-md h-auto rounded-lg shadow-md"
                 />

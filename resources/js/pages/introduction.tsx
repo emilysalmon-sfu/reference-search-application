@@ -53,6 +53,8 @@ export default function Introduction() {
                 <div className="mb-10 flex justify-center">
                     <img
                         src={frameworkImage}
+                        width={1142}
+                        height={896}
                         alt="Research Framework Illustration"
                         className="max-w-2xl w-full h-auto rounded-lg shadow-md"
                     />
