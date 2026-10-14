@@ -26,3 +26,12 @@ test('the og image is a 1200x630 png', function () {
 
     expect([$width, $height, $type])->toBe([1200, 630, IMAGETYPE_PNG]);
 });
+
+test('llms.txt lists its links as markdown links', function () {
+    expect(file_get_contents(public_path('llms.txt')))
+        ->toContain('](https://www.indigimos.com/)')
+        ->toContain('](https://www.indigimos.com/introduction)')
+        ->toContain('](https://www.indigimos.com/sitemap.xml)')
+        ->toContain('](https://www.indigimos.com/articles/search?subtheme=Leadership&year_from=2015)')
+        ->toContain('[Salmon, Chavez & Murphy (2023)](https://doi.org/10.5465/annals.2021.0132)');
+});
