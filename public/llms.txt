@@ -6,10 +6,10 @@ The site's name, Shelh tst, kws t'akw' tst, means "your path back home". It was 
 
 ## Who is behind it
 
-- Led by Emily Salmon, Beedie School of Business, Simon Fraser University (SFU).
-- Articles are organized with the research framework from Salmon, Chavez & Murphy (2023), "Navigating Indigenous management and organizational studies research": https://doi.org/10.5465/annals.2021.0132
-- Funded by the Social Sciences and Humanities Research Council of Canada (SSHRC).
-- Partners: SFU Beedie School of Business, Balance Co-Lab (https://balancecolab.com), SSHRC, and the Gustavson School of Business at the University of Victoria.
+- Led by Emily Salmon, [Beedie School of Business, Simon Fraser University (SFU)](https://www.sfu.ca/beedie.html).
+- Articles are organized with the research framework from [Salmon, Chavez & Murphy (2023)](https://doi.org/10.5465/annals.2021.0132), "Navigating Indigenous management and organizational studies research".
+- Funded by the [Social Sciences and Humanities Research Council of Canada (SSHRC)](https://www.sshrc-crsh.gc.ca).
+- Partners: [SFU Beedie School of Business](https://www.sfu.ca/beedie.html), [Balance Co-Lab](https://balancecolab.com), [SSHRC](https://www.sshrc-crsh.gc.ca), and the [Gustavson School of Business at the University of Victoria](https://www.uvic.ca/gustavson/index.php).
 
 ## Themes
 
@@ -52,13 +52,14 @@ All parameters are optional and combined with AND. Text parameters match anywher
 
 Examples:
 
-- Leadership research since 2015: https://www.indigimos.com/articles/search?subtheme=Leadership&year_from=2015
-- Indigenous entrepreneurship in Canada: https://www.indigimos.com/articles/search?theme=Indigenous%20Organizing&subtheme=Entrepreneurship&country=Canada
-- Keyword search: https://www.indigimos.com/articles/search?keywords=land%20rights
+- [Leadership research since 2015](https://www.indigimos.com/articles/search?subtheme=Leadership&year_from=2015)
+- [Indigenous entrepreneurship in Canada](https://www.indigimos.com/articles/search?theme=Indigenous%20Organizing&subtheme=Entrepreneurship&country=Canada)
+- [Keyword search for "land rights"](https://www.indigimos.com/articles/search?keywords=land%20rights)
 
-Results show 10 articles per page; add `page=2`, `page=3` and so on for more. Each result links to the article through its DOI (https://doi.org/...).
+Results show 10 articles per page; add `page=2`, `page=3` and so on for more. Each result links to the article through its DOI (`https://doi.org/...`).
 
 ## Pages
 
-- Search: https://www.indigimos.com/
-- Introduction and framework: https://www.indigimos.com/introduction
+- [Search](https://www.indigimos.com/): search and filter the database; also links to suggest a source.
+- [Introduction and framework](https://www.indigimos.com/introduction): what the site is, the meaning of its name, and the themes and subthemes.
+- [Sitemap](https://www.indigimos.com/sitemap.xml): every public page.
