@@ -62,4 +62,3 @@ Results show 10 articles per page; add `page=2`, `page=3` and so on for more. Ea
 
 - Search: https://www.indigimos.com/
 - Introduction and framework: https://www.indigimos.com/introduction
-- Privacy: https://www.indigimos.com/privacy

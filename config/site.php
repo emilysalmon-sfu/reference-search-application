@@ -24,10 +24,6 @@ return [
             'title' => 'Introduction | IndigiMOS',
             'description' => 'What the IndigiMOS database is, what its name Shelh tst, kws t\'akw\' tst means, and the framework of themes and subthemes used to organize Indigenous management research.',
         ],
-        'privacy' => [
-            'title' => 'Privacy | IndigiMOS',
-            'description' => 'The anonymous usage statistics IndigiMOS collects, and what it does not collect.',
-        ],
     ],
 
     'themes' => ['Indigenous Ways of Being', 'Indigenous Organizing', 'Indigenous Relating', 'Academic Implications'],

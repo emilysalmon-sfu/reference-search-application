@@ -8,7 +8,7 @@ test('the sitemap lists the public pages', function () {
     $xml = simplexml_load_file(public_path('sitemap.xml'));
 
     expect(array_map(fn ($url) => (string) $url->loc, iterator_to_array($xml->url, false)))->toBe([
-        'https://www.indigimos.com/', 'https://www.indigimos.com/introduction', 'https://www.indigimos.com/privacy',
+        'https://www.indigimos.com/', 'https://www.indigimos.com/introduction',
     ]);
 });
 
