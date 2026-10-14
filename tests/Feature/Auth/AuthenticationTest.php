@@ -4,8 +4,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Fortify\Features;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
-
 test('login screen can be rendered', function () {
     $response = $this->get(route('login'));
 
@@ -21,7 +19,7 @@ test('users can authenticate using the login screen', function () {
     ]);
 
     $this->assertAuthenticated();
-    $response->assertRedirect(route('dashboard', absolute: false));
+    $response->assertRedirect(config('fortify.home'));
 });
 
 test('users with two factor enabled are redirected to two factor challenge', function () {
@@ -69,7 +67,7 @@ test('users can logout', function () {
     $response = $this->actingAs($user)->post(route('logout'));
 
     $this->assertGuest();
-    $response->assertRedirect(route('home'));
+    $response->assertRedirect('/');
 });
 
 test('users are rate limited', function () {

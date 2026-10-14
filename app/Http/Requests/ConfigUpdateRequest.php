@@ -23,7 +23,9 @@ class ConfigUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'worksheet_name' => 'nullable|string',
+            'column_map' => 'nullable|array',
+            'type_styles' => 'nullable|array',
         ];
     }
 }

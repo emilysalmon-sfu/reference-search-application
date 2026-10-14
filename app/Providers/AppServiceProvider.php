@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Inertia\Inertia;
 use Maatwebsite\Excel\Imports\HeadingRowFormatter;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,13 +21,5 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         HeadingRowFormatter::default('none');
-
-        Inertia::share([
-            'auth' => function () {
-                return [
-                    'user' => auth()->user(),
-                ];
-            },
-        ]);
     }
 }

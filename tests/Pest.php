@@ -1,5 +1,13 @@
 <?php
 
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Tests\TestCase;
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -11,8 +19,8 @@
 |
 */
 
-pest()->extend(Tests\TestCase::class)
- // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+pest()->extend(TestCase::class)
+    ->use(RefreshDatabase::class)
     ->in('Feature');
 
 /*
@@ -41,7 +49,68 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function admin(): User
 {
-    // ..
+    return User::factory()->admin()->create();
+}
+
+function approver(): User
+{
+    return User::factory()->approver()->create();
+}
+
+/**
+ * A valid article form submission.
+ */
+function articlePayload(array $overrides = []): array
+{
+    return array_merge([
+        'author' => 'Smith, J.',
+        'title' => 'A study on balance',
+        'year_published' => '2020',
+        'journal_name' => 'Journal of Tests',
+    ], $overrides);
+}
+
+/**
+ * Makes every SQL query containing one of the given fragments throw,
+ * to exercise the "database failed" branches of controllers.
+ */
+function failQueriesContaining(string ...$fragments): void
+{
+    DB::listen(function ($query) use ($fragments) {
+        foreach ($fragments as $fragment) {
+            if (str_contains($query->sql, $fragment)) {
+                throw new RuntimeException("Simulated database failure on: {$fragment}");
+            }
+        }
+    });
+}
+
+/**
+ * Builds a real .xlsx upload. The first row of $rows is the heading row.
+ */
+function spreadsheetUpload(array $rows, string $sheetName = 'Sheet1'): UploadedFile
+{
+    $spreadsheet = new Spreadsheet;
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setTitle($sheetName);
+    $sheet->fromArray($rows, null, 'A1', true);
+
+    $path = tempnam(sys_get_temp_dir(), 'import').'.xlsx';
+    (new Xlsx($spreadsheet))->save($path);
+
+    return new UploadedFile($path, 'articles.xlsx', null, null, true);
+}
+
+/** Inserts a row directly, bypassing the model's DOI normalization. */
+function insertLegacyArticle(string $doi, bool $approved = true): int
+{
+    return DB::table('articles')->insertGetId([
+        'author' => 'Legacy, A.',
+        'title' => 'Legacy title',
+        'journal_name' => 'Old Journal',
+        'doi' => $doi,
+        'isApproved' => $approved,
+    ]);
 }

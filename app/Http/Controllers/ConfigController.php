@@ -34,14 +34,7 @@ class ConfigController extends Controller
     public function update(ConfigUpdateRequest $request)
     {
         try {
-            $data = $request->validate([
-                'worksheet_name' => 'nullable|string',
-                'column_map' => 'nullable|array',
-                'type_styles' => 'nullable|array',
-            ]);
-
-            $config = Config::current();
-            $config->update($data);
+            Config::current()->update($request->validated());
 
             return redirect()->back()->with('success', 'The settings were updated successfully!');
 

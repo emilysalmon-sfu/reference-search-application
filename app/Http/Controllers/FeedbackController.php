@@ -138,12 +138,4 @@ class FeedbackController extends Controller
 
         return back()->with('success', 'Feedback deleted successfully.');
     }
-
-    /**
-     * Get unresolved feedback count for dashboard.
-     */
-    public static function getUnresolvedCount(): int
-    {
-        return Feedback::where('isResolved', false)->count();
-    }
 }

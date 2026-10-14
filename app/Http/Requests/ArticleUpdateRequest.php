@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\UniqueDoi;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ArticleUpdateRequest extends FormRequest
@@ -44,16 +45,17 @@ class ArticleUpdateRequest extends FormRequest
         return [
             'author' => 'required|string|max:255',
             'title' => 'required|string',
-            'year_published' => 'nullable|date_format:Y',
+            'year_published' => 'nullable|digits:4',
             'journal_name' => 'required|string',
             'keywords' => 'nullable|array',
             'keywords.*' => 'string',
             'abstract' => 'nullable|string',
-            'doi' => 'nullable|string|max:255',
+            'doi' => ['nullable', 'string', 'max:255', new UniqueDoi($this->route('article')?->getKey())],
             'theme' => 'nullable|string|max:255',
             'sub_theme_1' => 'nullable|string|max:255',
             'country' => 'nullable|string|max:255',
             'type_of_study' => 'nullable|string|max:255',
         ];
     }
+
 }

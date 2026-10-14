@@ -198,16 +198,6 @@ class ArticleController extends Controller
         return Inertia::render('Articles/createArticle');
     }
 
-    public function store(ArticleStoreRequest $request)
-    {
-        $validated = $request->validated();
-        $validated['source'] = Article::SOURCE_ADMIN;
-
-        Article::create($validated);
-
-        return redirect()->route('articlesIndex')->with('success', 'Article created successfully.');
-    }
-
     public function submitArticleForApproval(ArticleStoreRequest $request)
     {
         try {
