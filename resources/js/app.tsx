@@ -6,10 +6,11 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { initializeTheme } from './hooks/use-appearance';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+// Mirrors the titles in config/site.php, which the server renders into the first page load.
+const siteTitle = 'IndigiMOS: Indigenous Management & Organizational Studies Research Database';
 
 createInertiaApp({
-    title: (title) => (title ? `${title} - ${appName}` : appName),
+    title: (title) => (title ? `${title} | IndigiMOS` : siteTitle),
     resolve: (name) =>
         resolvePageComponent(
             `./pages/${name}.tsx`,

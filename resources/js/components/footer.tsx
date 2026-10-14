@@ -1,7 +1,7 @@
-import sfuBusinessLogo from '@/assets/SFU_business_logo.jpg';
-import balanceCoLabLogo from '@/assets/BalanceCoLab_logo.png';
-import sshrcLogo from '@/assets/sshrc-logo.png';
-import gustavsonLogo from '@/assets/gustavson-logo.jpg';
+import sfuBusinessLogo from '@/assets/SFU_business_logo.webp';
+import balanceCoLabLogo from '@/assets/BalanceCoLab_logo.webp';
+import sshrcLogo from '@/assets/sshrc-logo.webp';
+import gustavsonLogo from '@/assets/gustavson-logo.webp';
 
 export default function Footer() {
     return (
@@ -17,6 +17,8 @@ export default function Footer() {
                         >
                             <img
                                 src={sfuBusinessLogo}
+                                width={504}
+                                height={128}
                                 alt="SFU Beedie School of Business"
                                 className="h-12 md:h-16 w-auto object-contain dark:bg-white dark:rounded-md dark:p-1"
                             />
@@ -29,6 +31,8 @@ export default function Footer() {
                         >
                             <img
                                 src={balanceCoLabLogo}
+                                width={181}
+                                height={128}
                                 alt="Balance Co-Lab"
                                 className="h-12 md:h-16 w-auto object-contain dark:bg-white dark:rounded-md dark:p-1"
                             />
@@ -41,6 +45,8 @@ export default function Footer() {
                         >
                             <img
                                 src={sshrcLogo}
+                                width={708}
+                                height={89}
                                 alt="SSHRC"
                                 className="h-12 md:h-16 w-auto object-contain dark:bg-white dark:rounded-md dark:p-1"
                             />
@@ -53,6 +59,8 @@ export default function Footer() {
                         >
                             <img
                                 src={gustavsonLogo}
+                                width={298}
+                                height={128}
                                 alt="Gustavson School of Business"
                                 className="h-12 md:h-16 w-auto object-contain dark:bg-white dark:rounded-md dark:p-1"
                             />

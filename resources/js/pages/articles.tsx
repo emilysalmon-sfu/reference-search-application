@@ -13,7 +13,7 @@ import Pagination from '@/components/ui/pagination';
 import SuggestArticleModal from '@/components/SuggestArticleModal';
 import FlashMessages from '@/components/ui/flash-messages';
 import ReportButton from '@/components/report-button';
-import frameworkImage from '@/assets/framework-image.png';
+import frameworkImage from '@/assets/framework-image.webp';
 
 type PaginatedArticles = {
     data: ArticleType[];
@@ -192,6 +192,8 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
         <div className="flex h-full flex-1 flex-col gap-4 p-4">
             <FlashMessages />
 
+            <h1 className="text-2xl font-bold text-foreground">Indigenous Management &amp; Organizational Studies Research Database</h1>
+
             {/* Suggestion Card & Framework Description */}
             <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <p className="text-base leading-relaxed text-muted-foreground md:max-w-4xl">
@@ -233,10 +235,11 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
             >
                 <div className="grid gap-4 md:grid-cols-4">
                     <div className="space-y-1">
-                        <label className="text-foreground block text-xs font-medium">
+                        <label htmlFor="search-author" className="text-foreground block text-xs font-medium">
                             Author
                         </label>
                         <input
+                            id="search-author"
                             type="text"
                             value={data.author ?? ''}
                             onChange={(e) => setData('author', e.target.value)}
@@ -246,10 +249,11 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                     </div>
 
                     <div className="space-y-1">
-                        <label className="text-foreground block text-xs font-medium">
+                        <label htmlFor="search-title" className="text-foreground block text-xs font-medium">
                             Title
                         </label>
                         <input
+                            id="search-title"
                             type="text"
                             value={data.title ?? ''}
                             onChange={(e) => setData('title', e.target.value)}
@@ -259,10 +263,11 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                     </div>
 
                     <div className="space-y-1">
-                        <label className="text-foreground block text-xs font-medium">
+                        <label htmlFor="search-journal" className="text-foreground block text-xs font-medium">
                             Journal
                         </label>
                         <input
+                            id="search-journal"
                             type="text"
                             value={data.journal ?? ''}
                             onChange={(e) => setData('journal', e.target.value)}
@@ -272,10 +277,11 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                     </div>
 
                     <div className="space-y-1">
-                        <label className="text-foreground block text-xs font-medium">
+                        <label htmlFor="search-keywords" className="text-foreground block text-xs font-medium">
                             Keywords
                         </label>
                         <input
+                            id="search-keywords"
                             type="text"
                             value={data.keywords ?? ''}
                             onChange={(e) => setData('keywords', e.target.value)}
@@ -285,10 +291,11 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                     </div>
 
                     <div className="space-y-1">
-                        <label className="text-foreground block text-xs font-medium">
+                        <label htmlFor="search-country" className="text-foreground block text-xs font-medium">
                             Country
                         </label>
                         <input
+                            id="search-country"
                             type="text"
                             value={data.country ?? ''}
                             onChange={(e) => setData('country', e.target.value)}
@@ -298,10 +305,11 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                     </div>
 
                     <div className="space-y-1">
-                        <label className="text-foreground block text-xs font-medium">
+                        <label htmlFor="search-type-of-study" className="text-foreground block text-xs font-medium">
                             Type of Study
                         </label>
                         <select
+                            id="search-type-of-study"
                             value={data.type_of_study ?? ''}
                             onChange={(e) => setData('type_of_study', e.target.value)}
                             className="w-full rounded-md border bg-background px-3 py-2 text-sm"
@@ -316,10 +324,11 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                     </div>
 
                     <div className="space-y-1">
-                        <label className="text-foreground block text-xs font-medium">
+                        <label htmlFor="search-theme" className="text-foreground block text-xs font-medium">
                             Theme
                         </label>
                         <select
+                            id="search-theme"
                             value={data.theme ?? ''}
                             onChange={(e) => {
                                 setData('theme', e.target.value);
@@ -337,10 +346,11 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                     </div>
 
                     <div className="space-y-1">
-                        <label className="text-foreground block text-xs font-medium">
+                        <label htmlFor="search-subtheme" className="text-foreground block text-xs font-medium">
                             Subtheme
                         </label>
                         <select
+                            id="search-subtheme"
                             value={data.subtheme ?? ''}
                             onChange={(e) => setData('subtheme', e.target.value)}
                             className="w-full rounded-md border bg-background px-3 py-2 text-sm"
@@ -356,10 +366,11 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                     </div>
 
                     <div className="space-y-1">
-                        <label className="text-foreground block text-xs font-medium">
+                        <label htmlFor="search-year-from" className="text-foreground block text-xs font-medium">
                             Year From
                         </label>
                         <input
+                            id="search-year-from"
                             type="number"
                             inputMode="numeric"
                             min={1800}
@@ -372,10 +383,11 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                     </div>
 
                     <div className="space-y-1">
-                        <label className="text-foreground block text-xs font-medium">
+                        <label htmlFor="search-year-to" className="text-foreground block text-xs font-medium">
                             Year To
                         </label>
                         <input
+                            id="search-year-to"
                             type="number"
                             inputMode="numeric"
                             min={1800}
@@ -388,10 +400,11 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                     </div>
 
                     <div className="space-y-1 md:col-span-2">
-                        <label className="text-foreground block text-xs font-medium">
+                        <label htmlFor="search-abstract" className="text-foreground block text-xs font-medium">
                             Abstract
                         </label>
                         <input
+                            id="search-abstract"
                             type="text"
                             value={data.abstract ?? ''}
                             onChange={(e) => setData('abstract', e.target.value)}
@@ -467,6 +480,9 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
             <div className="flex justify-center">
                 <img
                     src={frameworkImage}
+                    width={1142}
+                    height={896}
+                    fetchPriority="high"
                     alt="Research Framework Illustration"
                     className="max-w-md h-auto rounded-lg shadow-md"
                 />
@@ -480,7 +496,7 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                             <th className="border border-border bg-[#41665B] p-4 text-left font-semibold text-white">
                                 Indigenous Ways of Being
                             </th>
-                            <th className="border border-border bg-[#CA7447] p-4 text-left font-semibold text-white">
+                            <th className="border border-border bg-[#CA7447] p-4 text-left font-semibold text-gray-900">
                                 Indigenous Organizing
                             </th>
                             <th className="border border-border bg-[#DECD9F] p-4 text-left font-semibold text-gray-900">
@@ -493,12 +509,12 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                     </thead>
                     <tbody>
                         <tr>
-                            <td className="border border-border bg-[#5D8A7E] p-4 align-top text-sm text-white">
+                            <td className="border border-border bg-[#557E73] p-4 align-top text-sm text-white">
                                 <span className="mb-2 block font-semibold text-white">Indigenous knowledges</span>
                                 research highlights place-based, holistic, and evolving knowledge systems that support sustainability, risk management, and adaptation, while grappling with challenges of translation, appropriation, and ethical use within dominant Western scientific and institutional frameworks.
                             </td>
-                            <td className="border border-border bg-[#D9937A] p-4 align-top text-sm text-white">
-                                <span className="mb-2 block font-semibold text-white">Indigenous entrepreneurship</span>
+                            <td className="border border-border bg-[#D9937A] p-4 align-top text-sm text-gray-900">
+                                <span className="mb-2 block font-semibold text-gray-900">Indigenous entrepreneurship</span>
                                 studies emphasize enterprise forms that integrate community values, social and environmental purpose, and diverse measures of success, while navigating structural constraints rooted in colonial legacies, policy environments, and market systems.
                             </td>
                             <td className="border border-border bg-[#E8DBBE] p-4 align-top text-sm text-gray-900">
@@ -511,12 +527,12 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                             </td>
                         </tr>
                         <tr>
-                            <td className="border border-border bg-[#5D8A7E] p-4 align-top text-sm text-white">
+                            <td className="border border-border bg-[#557E73] p-4 align-top text-sm text-white">
                                 <span className="mb-2 block font-semibold text-white">Cultural values &amp; identity</span>
                                 research explores how Indigenous cultural values and identities shape sensemaking, behavior, and social organization, while also examining tensions arising from comparison with non-Indigenous cultures and the commodification, misrepresentation, or remediation of Indigenous identities in market contexts.
                             </td>
-                            <td className="border border-border bg-[#D9937A] p-4 align-top text-sm text-white">
-                                <span className="mb-2 block font-semibold text-white">Indigenous leadership</span>
+                            <td className="border border-border bg-[#D9937A] p-4 align-top text-sm text-gray-900">
+                                <span className="mb-2 block font-semibold text-gray-900">Indigenous leadership</span>
                                 conceptualizes leadership practices and motivations as relational, holistic, and culturally grounded, highlighting practices that sustain community wellbeing, steward values across generations, and contend with the pressures of operating within bicultural and often discriminatory contexts.
                             </td>
                             <td className="border border-border bg-[#E8DBBE] p-4 align-top text-sm text-gray-900">
@@ -528,12 +544,12 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
                             </td>
                         </tr>
                         <tr>
-                            <td className="border border-border bg-[#5D8A7E] p-4 align-top text-sm text-white">
+                            <td className="border border-border bg-[#557E73] p-4 align-top text-sm text-white">
                                 <span className="mb-2 block font-semibold text-white">Indigenous governance</span>
                                 literature examines Indigenous governance systems as resilient, value-driven, and multicriteria decision-making arrangements that integrate cultural, social, economic, and ecological considerations, particularly in relation to natural resource management and economic organization.
                             </td>
-                            <td className="border border-border bg-[#D9937A] p-4 align-top text-sm text-white">
-                                <span className="mb-2 block font-semibold text-white">Indigenous management</span>
+                            <td className="border border-border bg-[#D9937A] p-4 align-top text-sm text-gray-900">
+                                <span className="mb-2 block font-semibold text-gray-900">Indigenous management</span>
                                 research explores distinct managerial practices and organizational logics that reflect Indigenous worldviews, including collective decision-making, strategic planning, and the integration of cultural values into everyday organizational life.
                             </td>
                             <td className="border border-border bg-[#E8DBBE] p-4 align-top text-sm text-gray-900">
@@ -561,11 +577,11 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
 
     return (
         <>
-            <Head title="Article Search" />
+            <Head title="" />
             {auth.user ? (
                 <AppLayout breadcrumbs={breadcrumbs}>{content}</AppLayout>
             ) : (
-                <PublicLayout title="Article Search">{content}</PublicLayout>
+                <PublicLayout>{content}</PublicLayout>
             )}
         </>
     );
