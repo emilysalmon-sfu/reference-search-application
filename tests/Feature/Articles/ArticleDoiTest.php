@@ -142,6 +142,8 @@ test('the unique doi rule ignores blank values', function (?string $value) {
 })->with(['empty' => [''], 'spaces' => ['   '], 'null' => [null]]);
 
 test('the doi migration normalizes existing dois without adding a unique index', function () {
+    // Recreate the database as it was before the unique index, when duplicate DOIs could exist.
+    (require database_path('migrations/2026_10_15_000000_add_unique_index_to_articles_doi.php'))->down();
     $migration = require database_path('migrations/2026_10_09_000000_normalize_article_dois.php');
 
     $url = insertLegacyArticle('https://doi.org/10.1000/ABC');
@@ -157,4 +159,10 @@ test('the doi migration normalizes existing dois without adding a unique index',
         $corrupted => '10.1002/cjas.70076',
         $duplicate => '10.1000/abc',
     ]);
+});
+
+test('the database rejects two articles with the same doi', function () {
+    Article::factory()->create(['doi' => '10.1000/abc']);
+
+    expect(fn () => insertLegacyArticle('10.1000/abc'))->toThrow(Illuminate\Database\UniqueConstraintViolationException::class);
 });
