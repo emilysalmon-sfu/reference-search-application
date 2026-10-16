@@ -423,6 +423,7 @@ class ArticleController extends Controller
 
         try {
             $journalNames = Article::query()
+                ->where('isApproved', true)
                 ->whereNotNull('journal_name')
                 ->where('journal_name', '!=', '')
                 ->where('journal_name', 'like', '%' . $query . '%')
