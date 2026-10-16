@@ -54,7 +54,7 @@ export default function Users({ users }: Props) {
     const handlePageChange = (page: number) => {
         if (searchTerm) {
             // During search, maintain search params and add page
-            const params: Record<string, any> = {
+            const params: Record<string, string | number> = {
                 search: searchTerm,
                 page: page,
             };
@@ -81,7 +81,7 @@ export default function Users({ users }: Props) {
     const handlePageSizeChange = (newPageSize: number) => {
         if (searchTerm) {
             // During search, maintain search params and add per_page
-            const params: Record<string, any> = {
+            const params: Record<string, string | number> = {
                 search: searchTerm,
                 per_page: newPageSize,
             };

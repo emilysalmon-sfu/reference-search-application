@@ -69,7 +69,7 @@ export default function ArticleList({ articles, types = [], themes = [] }: Props
     const handlePageChange = (page: number) => {
         if (searchTerm || missingYear) {
             // During search/filter, maintain params and add page
-            const params: Record<string, any> = {
+            const params: Record<string, string | number> = {
                 page: page,
             };
             if (searchTerm) {
@@ -104,7 +104,7 @@ export default function ArticleList({ articles, types = [], themes = [] }: Props
     const handlePageSizeChange = (newPageSize: number) => {
         if (searchTerm || missingYear) {
             // During search/filter, maintain params and add per_page
-            const params: Record<string, any> = {
+            const params: Record<string, string | number> = {
                 per_page: newPageSize,
             };
             if (searchTerm) {
@@ -154,7 +154,7 @@ export default function ArticleList({ articles, types = [], themes = [] }: Props
             );
         } else {
             // Search through all articles using searchArticlesList endpoint
-            const params: Record<string, any> = {};
+            const params: Record<string, string | number> = {};
             if (term.trim()) {
                 params.title = term;
                 params.author = term;

@@ -9,7 +9,7 @@ type PaginationShape = {
 
 type Props = {
   pagination?: PaginationShape | null; // allow undefined/null
-  query?: Record<string, any>;
+  query?: Record<string, string | number>;
   maxButtons?: number;
   className?: string;
   onPageChange?: (page: number) => void; // New callback prop

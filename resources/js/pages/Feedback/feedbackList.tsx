@@ -63,7 +63,7 @@ export default function FeedbackList({ feedbacks }: Props) {
 
 
     const handlePageChange = (page: number) => {
-        const params: Record<string, any> = { page };
+        const params: Record<string, string | number> = { page };
         if (searchTerm) params.search = searchTerm;
         if (statusFilter) params.status = statusFilter;
 
@@ -75,7 +75,7 @@ export default function FeedbackList({ feedbacks }: Props) {
     };
 
     const handlePageSizeChange = (newPageSize: number) => {
-        const params: Record<string, any> = { per_page: newPageSize };
+        const params: Record<string, string | number> = { per_page: newPageSize };
         if (searchTerm) params.search = searchTerm;
         if (statusFilter) params.status = statusFilter;
 
@@ -104,7 +104,7 @@ export default function FeedbackList({ feedbacks }: Props) {
                 }
             );
         } else {
-            const params: Record<string, any> = {};
+            const params: Record<string, string | number> = {};
             if (term.trim()) params.search = term;
             if (currentStatus) params.status = currentStatus;
 

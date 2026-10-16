@@ -88,7 +88,7 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
         year_from: filters?.year_from?.toString() ?? '',
         year_to: filters?.year_to?.toString() ?? '',
         theme: filters?.theme ?? '',
-        subtheme: (filters as any)?.subtheme ?? '',
+        subtheme: filters?.subtheme ?? '',
     });
 
     // keep subtheme options in sync when initial props have a theme selected
@@ -110,7 +110,7 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
             preserveState: true,
             replace: true,
             onSuccess: (page) => {
-                const returned = (page.props as any)?.articles;
+                const returned = (page.props as Partial<Props>).articles;
                 const returnedCount = returned?.data?.length ?? 0;
                 setHasResults(returnedCount > 0);
                 setIsSearching(false); // stop loading
