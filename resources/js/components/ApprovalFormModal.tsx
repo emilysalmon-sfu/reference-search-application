@@ -107,7 +107,7 @@ export default function ApprovalFormModal({
                 type_of_study: article.type_of_study || '',
             });
         }
-    }, [open, article]);
+    }, [open, article, setData]);
 
     const handleClose = () => {
         clearErrors();

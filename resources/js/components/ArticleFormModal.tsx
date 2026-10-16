@@ -161,7 +161,7 @@ export default function ArticleFormModal({
             });
             clearErrors();
         }
-    }, [open, article, mode]);
+    }, [open, article, mode, setData, clearErrors]);
 
     const handleClose = () => {
         clearErrors();

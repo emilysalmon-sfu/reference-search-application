@@ -90,7 +90,7 @@ export default function SuggestArticleModal({
             });
             clearErrors();
         }
-    }, [open]);
+    }, [open, setData, clearErrors]);
 
     const handleClose = () => {
         clearErrors();
