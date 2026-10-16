@@ -5,6 +5,8 @@ use App\Http\Middleware\TrackVisits;
 use App\Models\AnalyticsSalt;
 use App\Models\AnalyticsSearch;
 use App\Models\AnalyticsVisit;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Exceptions;
 
 function inertiaHeaders(): array
@@ -102,4 +104,15 @@ test('a tracking failure does not break the page', function () {
     browse('/')->assertOk();
 
     Exceptions::assertReported(RuntimeException::class);
+});
+
+test('a failed tracking query is reported without its values, so the daily salt never reaches the logs', function () {
+    Exceptions::fake();
+    DB::statement("CREATE TRIGGER block_salts BEFORE INSERT ON analytics_salts BEGIN SELECT RAISE(ABORT, 'simulated failure'); END");
+
+    browse('/')->assertOk();
+
+    Exceptions::assertReported(fn (QueryException $e) => str_contains($e->getMessage(), 'insert into "analytics_salts"')
+        && str_contains($e->getMessage(), 'simulated failure')
+        && ! preg_match('/[0-9a-f]{64}/', $e->getMessage()));
 });

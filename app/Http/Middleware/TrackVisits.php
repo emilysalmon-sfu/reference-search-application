@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Analytics\Analytics;
 use Closure;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
@@ -32,6 +33,9 @@ class TrackVisits
             if ($visit && $search) {
                 Analytics::logSearch($visit, $search['filters'], $search['count']);
             }
+        } catch (QueryException $e) {
+            // Drop the bound values: they hold the daily salt or a visitor hash, which must never reach the logs.
+            report(new QueryException($e->getConnectionName(), $e->getSql(), [], $e->getPrevious()));
         } catch (Throwable $e) {
             report($e);
         }
