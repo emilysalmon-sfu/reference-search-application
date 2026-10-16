@@ -41,3 +41,14 @@ test('a failed save shows an error instead of crashing', function () {
         ->assertRedirect()
         ->assertSessionHas('error', 'An error occurred while submitting the article for approval.');
 });
+
+test('suggestions are limited to five a minute per visitor', function () {
+    foreach (range(1, 5) as $i) {
+        $this->post('/articles', articlePayload(['title' => "Study $i"]))->assertRedirect();
+    }
+
+    $this->post('/articles', articlePayload(['title' => 'Study 6']))->assertTooManyRequests();
+    $this->withServerVariables(['REMOTE_ADDR' => '10.0.0.2'])->post('/articles', articlePayload(['title' => 'Study 7']))->assertRedirect();
+
+    expect(Article::count())->toBe(6);
+});

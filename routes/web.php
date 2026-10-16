@@ -89,7 +89,7 @@ Route::controller(ArticleController::class)->group(function () {
     Route::get('/', 'index')->name('articlesIndex');
     Route::get('articles/search', 'queryArticles')->name('queryArticles');
     Route::get('articles/journals/search', 'searchJournalNames')->name('searchJournalNames');
-    Route::post('articles', 'submitArticleForApproval')->name('submitForApproval');
+    Route::post('articles', 'submitArticleForApproval')->middleware('throttle:5,1')->name('submitForApproval');
 });
 
 Route::get('/introduction', function () {
