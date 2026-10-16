@@ -23,7 +23,6 @@ export default function Upload() {
 
     const handleFileChange = (files: FileList) => {
         const [selectedFile] = Array.from(files ?? []);
-        console.log('Selected file:', selectedFile);
 
         if (!selectedFile) {
             setData('file', null);
@@ -35,19 +34,9 @@ export default function Upload() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Submitting file:', data.file);
         post(fileUpload.url(), {
             forceFormData: true,
-
-            onSuccess: (response: object) => {
-                console.log(response);
-            },
-
-            onError: (errors: object) => {
-                console.log(errors);
-            },
             onFinish: () => {
-                console.log('Upload finished');
                 setClearFileTrigger((prev) => prev + 1);
                 reset()
             },

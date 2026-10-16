@@ -73,9 +73,6 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
     const [subthemeOptions, setSubthemeOptions] = useState<string[]>([]);
     const [isSuggestModalOpen, setIsSuggestModalOpen] = useState(false);
 
-    console.log("Props types:", types);
-    console.log("Props themes:", themes);
-
 
     const { data, setData, get } = useForm<Filters>({
         author: filters?.author ?? '',
@@ -98,11 +95,8 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
         setSubthemeOptions(match?.subthemes ?? []);
     }, [data.theme, themes]);
 
-    console.log("Articles:", articles);
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Data:", data);
         setHasSearched(true);
         setIsSearching(true); // start loading
 
@@ -156,9 +150,6 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
             // Build query string from current filters
             const params = new URLSearchParams();
 
-            console.log('Current filter data:', data);
-            console.log('Current filter data:', params);
-
             Object.entries(data).forEach(([key, value]) => {
                 if (value) {
                     params.append(key, String(value));
@@ -168,14 +159,12 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
             });
 
             const url = fileExport.url() + '?' + params.toString();
-            console.log('Download URL:', url);
             window.location.href = url;
 
         } catch (error) {
             console.error('Error preparing download:', error);
         } finally {
             setIsExecuting(false);
-            console.log('Download process initiated.');
         }
     };
 

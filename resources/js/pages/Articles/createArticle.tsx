@@ -47,7 +47,6 @@ export default function CreateArticles({ article }: Props) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Submitting article data:', data);
         router.post('/articles', new FormData(e.currentTarget as HTMLFormElement));
     };
 
