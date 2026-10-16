@@ -19,16 +19,19 @@ class UsageExport implements WithMultipleSheets
         $rows = fn (string $type, array $items, string $name) => array_map(fn ($item) => [$type, $item[$name], $item['visits']], $items);
 
         return [
-            new UsageSheet('Summary', ['Metric', 'This period', 'Previous period', 'Change %'],
-                array_map(fn ($s) => [$s['metric'], $s['current'], $s['previous'], $s['change']], $r['summary'])),
-            new UsageSheet('Location', ['Type', 'Name', 'Visits'], [
-                ...$rows('Region', $r['regions'], 'region'),
-                ...array_map(fn ($c) => [
-                    'Country',
+            new UsageSheet('Summary', [
+                'Metric',
+                "This period ({$r['from']} to {$r['to']})",
+                "Previous period ({$r['previous_from']} to {$r['previous_to']})",
+                'Change %',
+            ], array_map(fn ($s) => [$s['metric'], $s['current'], $s['previous'], $s['change']], $r['summary'])),
+            new UsageSheet('Regions', ['Region', 'Visits'],
+                array_map(fn ($region) => [$region['region'], $region['visits']], $r['regions'])),
+            new UsageSheet('Countries', ['Country', 'Visits'],
+                array_map(fn ($c) => [
                     \Locale::getDisplayRegion('-'.$c['country_code'], 'en').' ('.$c['country_code'].')',
                     $c['visits'],
-                ], $r['countries']),
-            ]),
+                ], $r['countries'])),
             new UsageSheet('Sources', ['Type', 'Name', 'Visits'], [
                 ...$rows('Source type', $r['source_types'], 'source_type'),
                 ...$rows('Referring website', $r['referrers'], 'host'),
@@ -47,7 +50,7 @@ class UsageExport implements WithMultipleSheets
                     $z['last_searched'],
                 ], $r['zero_result_searches'])),
             new UsageSheet('Devices', ['Device', 'Visits'],
-                array_map(fn ($d) => [$d['device'], $d['visits']], $r['devices'])),
+                array_map(fn ($d) => [$d['device'] === 'desktop' ? 'Desktop' : 'Mobile & tablet', $d['visits']], $r['devices'])),
         ];
     }
 }

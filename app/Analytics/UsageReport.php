@@ -65,6 +65,7 @@ class UsageReport
         $previousTo = $this->from->subDay();
 
         $visits = $this->visits($this->from, $this->to);
+        $desktopVisits = $visits->where('device_type', 'desktop')->count();
         $searches = $this->searches($this->from, $this->to);
         $current = $this->totals($visits, $searches, $this->downloads($this->from, $this->to));
         $previous = $this->totals(
@@ -87,7 +88,13 @@ class UsageReport
             ])->values()->all(),
             'visits_over_time' => $this->perDay($visits, 'started_at', 'visits'),
             'searches_over_time' => $this->perDay($searches, 'searched_at', 'searches'),
-            'regions' => $this->tally($visits, fn ($visit) => Analytics::region($visit->country_code) ?? 'Unknown', 'region'),
+            // Every known region is listed, at 0 when nobody came from it; "Unknown" only when it has visits.
+            'regions' => $this->tally(
+                $visits,
+                fn ($visit) => Analytics::region($visit->country_code) ?? 'Unknown',
+                'region',
+                [...array_keys(config('analytics.regions')), 'Other'],
+            ),
             'countries' => $this->tally($visits->whereNotNull('country_code'), 'country_code', 'country_code'),
             'source_types' => $this->tally($visits, 'source_type', 'source_type'),
             'referrers' => $this->tally($visits->whereNotNull('source_host'), 'source_host', 'host'),
@@ -113,7 +120,10 @@ class UsageReport
                 ])
                 ->sortByDesc('count')->values()->all(),
             // The dashboard shows desktop vs. mobile; tablets count as mobile.
-            'devices' => $this->tally($visits, fn ($visit) => $visit->device_type === 'desktop' ? 'desktop' : 'mobile', 'device'),
+            'devices' => [
+                ['device' => 'desktop', 'visits' => $desktopVisits],
+                ['device' => 'mobile', 'visits' => $visits->count() - $desktopVisits],
+            ],
         ];
     }
 
@@ -164,11 +174,12 @@ class UsageReport
     }
 
     /**
-     * Visits counted per value, most first.
+     * Visits counted per value, most first. Values in $always are listed even without visits;
+     * ties keep the order of $always (PHP's sort is stable).
      */
-    private function tally(Collection $visits, string|callable $by, string $label): array
+    private function tally(Collection $visits, string|callable $by, string $label, array $always = []): array
     {
-        return $visits->countBy($by)->sortDesc()
+        return collect(array_replace(array_fill_keys($always, 0), $visits->countBy($by)->all()))->sortDesc()
             ->map(fn (int $count, string $value) => [$label => $value, 'visits' => $count])
             ->values()->all();
     }

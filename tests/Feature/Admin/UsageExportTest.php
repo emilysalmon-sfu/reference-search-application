@@ -8,7 +8,7 @@ use Carbon\CarbonImmutable;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
-test('the export has six sheets with the expected headers and dashboard values', function () {
+test('the export has seven sheets with the expected headers and dashboard values', function () {
     $at = CarbonImmutable::parse('2026-10-02 12:00', 'America/Vancouver')->utc();
     AnalyticsVisit::create([
         'visitor_hash' => str_repeat('a', 64), 'started_at' => $at, 'last_seen_at' => $at, 'source_type' => 'campaign',
@@ -22,10 +22,14 @@ test('the export has six sheets with the expected headers and dashboard values',
     $book = IOFactory::load($path);
     $sheet = fn (string $name) => $book->getSheetByName($name)->toArray(null, false, false);
 
-    expect($book->getSheetNames())->toBe(['Summary', 'Location', 'Sources', 'Searches', 'No-result searches', 'Devices'])
-        ->and($sheet('Summary')[0])->toBe(['Metric', 'This period', 'Previous period', 'Change %'])
+    expect($book->getSheetNames())->toBe(['Summary', 'Regions', 'Countries', 'Sources', 'Searches', 'No-result searches', 'Devices'])
+        ->and($sheet('Summary')[0])->toBe(['Metric', 'This period (2026-10-01 to 2026-10-10)', 'Previous period (2026-09-21 to 2026-09-30)', 'Change %'])
         ->and($sheet('Summary')[1])->toBe(['Visits', 1, 0, null])
-        ->and($sheet('Location'))->toBe([['Type', 'Name', 'Visits'], ['Region', 'North America', 1], ['Country', 'Canada (CA)', 1]])
+        ->and($sheet('Regions'))->toBe([
+            ['Region', 'Visits'],
+            ['North America', 1], ['South America', 0], ['Africa', 0], ['Europe', 0], ['Asia', 0], ['Oceania', 0], ['Other', 0],
+        ])
+        ->and($sheet('Countries'))->toBe([['Country', 'Visits'], ['Canada (CA)', 1]])
         ->and($sheet('Sources'))->toBe([
             ['Type', 'Name', 'Visits'],
             ['Source type', 'campaign', 1],
@@ -33,7 +37,7 @@ test('the export has six sheets with the expected headers and dashboard values',
         ])
         ->and($sheet('Searches'))->toBe([['Parameter', 'Value', 'Times used'], ['Keywords', 'salmon', 1]])
         ->and($sheet('No-result searches'))->toBe([['Search', 'Times searched', 'Last searched'], ['Keywords: salmon', 1, '2026-10-02 12:00']])
-        ->and($sheet('Devices'))->toBe([['Device', 'Visits'], ['mobile', 1]]);
+        ->and($sheet('Devices'))->toBe([['Device', 'Visits'], ['Desktop', 0], ['Mobile & tablet', 1]]);
 });
 
 test('admins download the report named after the range', function () {
