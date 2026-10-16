@@ -45,7 +45,7 @@ class FindDuplicateArticles extends Command
     {
         foreach ($groups->filter(fn (Collection $group) => $group->count() > 1) as $key => $articles) {
             foreach ($articles as $article) {
-                fputcsv($csv, [
+                fputcsv($csv, array_map($this->neutraliseFormula(...), [
                     $type,
                     $key,
                     $article->id,
@@ -57,8 +57,16 @@ class FindDuplicateArticles extends Command
                     $article->isApproved ? 'yes' : 'no',
                     $article->source,
                     $article->created_at,
-                ]);
+                ]));
             }
         }
+    }
+
+    /**
+     * Article fields come from public submissions: quote anything a spreadsheet would run as a formula.
+     */
+    private function neutraliseFormula(mixed $value): mixed
+    {
+        return is_string($value) && preg_match("/^[=+\-@\t\r]/", $value) ? "'".$value : $value;
     }
 }
