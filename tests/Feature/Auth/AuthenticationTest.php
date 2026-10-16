@@ -70,6 +70,17 @@ test('users can logout', function () {
     $response->assertRedirect('/');
 });
 
+test('another user can sign in on the same browser after a logout', function () {
+    $this->actingAs(User::factory()->create())->get(route('dashboard'))->assertOk();
+    $this->post(route('logout'));
+
+    $user = User::factory()->withoutTwoFactor()->create();
+    $this->post(route('login.store'), ['email' => $user->email, 'password' => 'password']);
+
+    $this->get(route('dashboard'))->assertOk();
+    $this->assertAuthenticatedAs($user);
+});
+
 test('users are rate limited', function () {
     $user = User::factory()->create();
 

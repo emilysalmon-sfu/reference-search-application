@@ -214,6 +214,8 @@ test('a failed delete shows an error', function () {
 });
 
 test('editing or deleting a missing article is a 404', function () {
-    $this->actingAs(User::factory()->create())->put('/admin/articles/999', articlePayload())->assertNotFound();
-    $this->actingAs(User::factory()->create())->delete('/admin/articles/999')->assertNotFound();
+    $this->actingAs(User::factory()->create());
+
+    $this->put('/admin/articles/999', articlePayload())->assertNotFound();
+    $this->delete('/admin/articles/999')->assertNotFound();
 });
