@@ -16,7 +16,8 @@ import {
     MessageSquare,
     Palette,
     Copy,
-    Route
+    Route,
+    ChartColumn
 } from 'lucide-react';
 
 interface FeatureSection {
@@ -56,6 +57,43 @@ const featureSections: FeatureSection[] = [
             {
                 name: 'Time-Filtered Statistics',
                 description: 'View downloads, user submissions, and admin articles filtered by time period (24h, week, month, etc.).',
+            },
+        ],
+    },
+    {
+        title: 'Usage & Search Visibility',
+        icon: <ChartColumn className="h-5 w-5" />,
+        description: 'How the public site is used, and how people and search engines find it.',
+        features: [
+            {
+                name: 'Reading the Usage page',
+                description: 'Pick a period (or custom dates). Every number is compared with the period of the same length just before it, e.g. "+30% vs. previous period". A visit is one person browsing; it ends after 30 minutes without activity. Staff who are logged in and bots are not counted.',
+                badge: 'Admin Only',
+            },
+            {
+                name: 'Location, sources and devices',
+                description: 'Country comes from Cloudflare, which sits in front of the site; visits without one show as "Unknown". Regions group countries into North America (Canada, the US and Mexico), South America, Europe, Africa, Asia and Oceania; anywhere else, such as Central America and the Caribbean, is "Other". "Search engines", "Social media" and "Other websites" show where visitors clicked from; "Direct" means a typed address, a bookmark, or an app that hides the referrer. Tablets are counted as mobile.',
+            },
+            {
+                name: 'Searches with no results',
+                description: 'Lists searches that found nothing, how often, and when last. Useful for spotting missing topics or spelling variants worth adding as keywords.',
+            },
+            {
+                name: 'Tracking a campaign with UTM links',
+                description: 'Add utm_source, utm_medium and utm_campaign to any link you share, e.g. https://www.indigimos.com/?utm_source=newsletter&utm_medium=email&utm_campaign=fall-2026. Visits from that link appear in the Campaigns table. Use the same spelling every time so they group together.',
+            },
+            {
+                name: 'Export to Excel',
+                description: 'Downloads the selected period as usage-report_{from}_to_{to}.xlsx with Summary, Location, Sources, Searches, No-result searches and Devices tabs.',
+                badge: 'Admin Only',
+            },
+            {
+                name: 'Google Search Console',
+                description: 'Add the site as a property in Search Console, choose the "HTML tag" verification method, and put the code in the GOOGLE_SITE_VERIFICATION environment variable; after a deploy, click Verify. Then submit https://www.indigimos.com/sitemap.xml under Sitemaps. Search Console shows which Google searches lead to the site; add other people under Settings > Users and permissions.',
+            },
+            {
+                name: 'Privacy',
+                description: 'No cookies are used for these statistics, IP addresses are never stored, and visitors cannot be linked from one day to the next (see the public Privacy page).',
             },
         ],
     },

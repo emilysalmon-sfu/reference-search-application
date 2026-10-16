@@ -114,3 +114,26 @@ function insertLegacyArticle(string $doi, bool $approved = true): int
         'isApproved' => $approved,
     ]);
 }
+
+const DESKTOP_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36';
+const MOBILE_UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Mobile/15E148 Safari/604.1';
+const TABLET_UA = 'Mozilla/5.0 (iPad; CPU OS 17_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Mobile/15E148 Safari/604.1';
+const BOT_UA = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)';
+
+/**
+ * A GET request from a desktop browser at a fixed IP, for the analytics helpers.
+ */
+function analyticsRequest(string $uri = '/', array $server = []): Illuminate\Http\Request
+{
+    return Illuminate\Http\Request::create($uri, 'GET', server: ['REMOTE_ADDR' => '203.0.113.7', 'HTTP_USER_AGENT' => DESKTOP_UA, ...$server]);
+}
+
+/**
+ * A browser page view from a fixed IP, as the analytics middleware sees it.
+ */
+function browse(string $uri, array $headers = [], string $ip = '203.0.113.7')
+{
+    return test()->withServerVariables(['REMOTE_ADDR' => $ip])
+        ->withHeaders(['User-Agent' => DESKTOP_UA, ...$headers])
+        ->get($uri);
+}

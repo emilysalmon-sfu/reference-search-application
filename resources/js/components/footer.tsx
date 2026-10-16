@@ -1,3 +1,4 @@
+import { Link } from '@inertiajs/react';
 import sfuBusinessLogo from '@/assets/SFU_business_logo.webp';
 import balanceCoLabLogo from '@/assets/BalanceCoLab_logo.webp';
 import sshrcLogo from '@/assets/sshrc-logo.webp';
@@ -68,6 +69,10 @@ export default function Footer() {
                     </div>
                     <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
                         © {new Date().getFullYear()} Indigenous Management Research Database. All rights reserved.
+                        {' · '}
+                        <Link href="/privacy" className="underline hover:text-gray-700 dark:hover:text-gray-200">
+                            Privacy
+                        </Link>
                     </p>
                 </div>
             </div>

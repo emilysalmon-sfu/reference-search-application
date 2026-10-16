@@ -6,6 +6,7 @@ use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\UsageController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\EnsureUserIsAdmin;
 use Illuminate\Support\Facades\Route;
@@ -61,6 +62,11 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
             Route::get('config', 'show')->name('configIndex');
             Route::put('config/update', 'update')->name('configUpdate');
         });
+
+        Route::controller(UsageController::class)->group(function () {
+            Route::get('usage', 'index')->name('usageIndex');
+            Route::get('usage/export', 'export')->name('usageExport');
+        });
     });
     Route::controller(ArticleController::class)->group(function () {
         Route::get('articles/new', 'create')->name('articlesCreate');
@@ -89,6 +95,10 @@ Route::controller(ArticleController::class)->group(function () {
 Route::get('/introduction', function () {
     return Inertia::render('introduction');
 })->name('introduction');
+
+Route::get('/privacy', function () {
+    return Inertia::render('privacy');
+})->name('privacy');
 
 Route::controller(FeedbackController::class)->group(function () {
     Route::post('report-feedback', 'store')->name('reportFeedback');
