@@ -72,7 +72,7 @@ const featureSections: FeatureSection[] = [
             },
             {
                 name: 'Location, sources and devices',
-                description: 'Country comes from Cloudflare, so it is only filled in once the site is served through Cloudflare. "Search engines", "Social media" and "Other websites" show where visitors clicked from; "Direct" means a typed address, a bookmark, or an app that hides the referrer. Tablets are counted as mobile.',
+                description: 'Country comes from Cloudflare, which sits in front of the site; visits without one show as "Unknown". Regions group countries into North America (Canada, the US and Mexico), South America, Europe, Africa, Asia and Oceania; anywhere else, such as Central America and the Caribbean, is "Other". "Search engines", "Social media" and "Other websites" show where visitors clicked from; "Direct" means a typed address, a bookmark, or an app that hides the referrer. Tablets are counted as mobile.',
             },
             {
                 name: 'Searches with no results',
