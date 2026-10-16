@@ -135,15 +135,15 @@ class ArticleController extends Controller
 
         try {
             $totalArticleCount = (clone $query)->count();
+
+            // Picked up by TrackVisits after the response is sent (on the original request: a form
+            // request has its own copy of the attributes). The search form never sends "page";
+            // pagination links always do (page=1 included), and those are the same search.
+            if (! $request->has('page')) {
+                request()->attributes->set('analytics.search', ['filters' => $filters, 'count' => $totalArticleCount]);
+            }
         } catch (\Exception $e) {
             $totalArticleCount = 0;
-        }
-
-        // Picked up by TrackVisits after the response is sent (on the original request: a form
-        // request has its own copy of the attributes). The search form never sends "page";
-        // pagination links always do (page=1 included), and those are the same search.
-        if (! $request->has('page')) {
-            request()->attributes->set('analytics.search', ['filters' => $filters, 'count' => $totalArticleCount]);
         }
 
         try {

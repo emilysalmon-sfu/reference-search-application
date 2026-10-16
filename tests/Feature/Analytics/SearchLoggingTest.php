@@ -50,3 +50,11 @@ test('country searches are grouped regardless of case', function () {
 
     expect(AnalyticsSearch::sole()->params)->toBe('{"country":"canada"}');
 });
+
+test('a search whose count failed is not logged as a zero-result search', function () {
+    failQueriesContaining('count(*)');
+
+    browse('/articles/search?title=balance')->assertOk();
+
+    expect(AnalyticsSearch::all())->toBeEmpty()->and(AnalyticsVisit::all())->toHaveCount(1);
+});
