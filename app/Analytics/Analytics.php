@@ -147,7 +147,7 @@ class Analytics
             default => 'website',
         };
 
-        return [...$source, 'source_type' => $type, 'source_host' => $host];
+        return [...$source, 'source_type' => $type, 'source_host' => mb_substr($host, 0, 255)];
     }
 
     /**

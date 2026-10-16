@@ -27,6 +27,15 @@ test('campaign keeps utm fields', function () {
     ]);
 });
 
+test('a referring host longer than the column is cut to 255 characters', function () {
+    $request = analyticsRequest(server: ['HTTP_REFERER' => 'https://'.str_repeat('a', 300).'.example.com/page']);
+
+    $source = Analytics::source($request);
+
+    expect($source['source_type'])->toBe('website')
+        ->and(mb_strlen($source['source_host']))->toBe(255);
+});
+
 test('devices are classified and bots are rejected', function (?string $ua, ?string $expected) {
     expect(Analytics::device($ua))->toBe($expected);
 })->with([
