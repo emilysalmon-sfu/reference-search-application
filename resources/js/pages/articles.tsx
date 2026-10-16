@@ -1,5 +1,4 @@
 import { ArticleCard } from '@/components/article-card';
-import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import PublicLayout from '@/layouts/public-layout';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
@@ -14,12 +13,6 @@ import SuggestArticleModal from '@/components/SuggestArticleModal';
 import FlashMessages from '@/components/ui/flash-messages';
 import ReportButton from '@/components/report-button';
 import frameworkImage from '@/assets/framework-image.webp';
-
-type PaginatedArticles = {
-    data: ArticleType[];
-    // meta?: any;
-    // links?: any;
-};
 
 type TypeOfStudy = string; // server returns string[] for types
 
@@ -95,7 +88,7 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
         year_from: filters?.year_from?.toString() ?? '',
         year_to: filters?.year_to?.toString() ?? '',
         theme: filters?.theme ?? '',
-        subtheme: (filters as any)?.subtheme ?? '',
+        subtheme: filters?.subtheme ?? '',
     });
 
     // keep subtheme options in sync when initial props have a theme selected
@@ -117,7 +110,7 @@ export default function Articles({ articles, filters, totalArticleCount, types, 
             preserveState: true,
             replace: true,
             onSuccess: (page) => {
-                const returned = (page.props as any)?.articles;
+                const returned = (page.props as Partial<Props>).articles;
                 const returnedCount = returned?.data?.length ?? 0;
                 setHasResults(returnedCount > 0);
                 setIsSearching(false); // stop loading

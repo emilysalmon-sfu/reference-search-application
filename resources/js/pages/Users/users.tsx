@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { createColumnHelper } from '@tanstack/react-table';
 import { router } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
@@ -32,12 +32,13 @@ interface PaginatedUsers<T> {
 }
 
 interface Props {
-    users?: PaginatedUsers<User> | null;
+    users: PaginatedUsers<User>;
 }
 
 export default function Users({ users }: Props) {
-    const [localSearchTerm, setLocalSearchTerm] = useState('');
-    const [searchTerm, setSearchTerm] = useState('');
+    // The search starts from the URL, so a reload or a shared link keeps it.
+    const [localSearchTerm, setLocalSearchTerm] = useState(() => new URLSearchParams(window.location.search).get('search') ?? '');
+    const [searchTerm, setSearchTerm] = useState(() => new URLSearchParams(window.location.search).get('search') ?? '');
     const [isSearching, setIsSearching] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -49,35 +50,11 @@ export default function Users({ users }: Props) {
 
     const columnHelper = createColumnHelper<User>();
 
-    // Guard: if no users data, don't render
-    if (!users || !users.data) {
-        return (
-            <AppLayout>
-                <div className="space-y-6 px-4 sm:px-6 lg:px-8">
-                    <div className="border-b pb-4">
-                        <h1 className="text-4xl font-bold tracking-tight">Users</h1>
-                        <p className="text-base text-muted-foreground mt-3">Loading...</p>
-                    </div>
-                </div>
-            </AppLayout>
-        );
-    }
-
-    // Initialize search term from URL parameters on mount
-    useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        const search = params.get('search');
-        
-        if (search) {
-            setLocalSearchTerm(search);
-            setSearchTerm(search);
-        }
-    }, []);
 
     const handlePageChange = (page: number) => {
         if (searchTerm) {
             // During search, maintain search params and add page
-            const params: Record<string, any> = {
+            const params: Record<string, string | number> = {
                 search: searchTerm,
                 page: page,
             };
@@ -104,7 +81,7 @@ export default function Users({ users }: Props) {
     const handlePageSizeChange = (newPageSize: number) => {
         if (searchTerm) {
             // During search, maintain search params and add per_page
-            const params: Record<string, any> = {
+            const params: Record<string, string | number> = {
                 search: searchTerm,
                 per_page: newPageSize,
             };

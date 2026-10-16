@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useForm } from '@inertiajs/react';
 import {
     Dialog,
@@ -61,10 +61,9 @@ export default function SuggestArticleModal({
     onOpenChange,
 }: SuggestArticleModalProps) {
     // Year picker state
-    const [yearDate, setYearDate] = useState<Date | null>(null);
     const maxYearDate = new Date(new Date().getFullYear() + 1, 11, 31);
 
-    const { data, setData, post, processing, errors, reset, clearErrors, transform } = useForm({
+    const { data, setData, post, processing, errors, clearErrors, transform } = useForm({
         author: '',
         title: '',
         year_published: '',
@@ -74,10 +73,8 @@ export default function SuggestArticleModal({
         doi: '',
     });
 
-    // Sync year date with form data
-    useEffect(() => {
-        setData('year_published', yearDate ? String(yearDate.getFullYear()) : '');
-    }, [yearDate]);
+    // The year picker shows and sets the form's year.
+    const yearDate = data.year_published ? new Date(Number(data.year_published), 0, 1) : null;
 
     // Clear form when modal opens
     useEffect(() => {
@@ -91,10 +88,9 @@ export default function SuggestArticleModal({
                 abstract: '',
                 doi: '',
             });
-            setYearDate(null);
             clearErrors();
         }
-    }, [open]);
+    }, [open, setData, clearErrors]);
 
     const handleClose = () => {
         clearErrors();
@@ -166,7 +162,7 @@ export default function SuggestArticleModal({
                             <DatePicker
                                 id="year_published"
                                 selected={yearDate}
-                                onChange={(date) => setYearDate(date)}
+                                onChange={(date) => setData('year_published', date ? String(date.getFullYear()) : '')}
                                 showYearPicker
                                 dateFormat="yyyy"
                                 minDate={new Date(1800, 0, 1)}

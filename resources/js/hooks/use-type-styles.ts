@@ -17,10 +17,7 @@ const defaultUnknownStyle: TypeStyle = {
  * Hook to get type styles from shared page props
  */
 export function useTypeStyles(): TypeStyles {
-    const page = usePage();
-    const typeStyles = (page.props as any).typeStyles as TypeStyles | undefined;
-    
-    return typeStyles ?? {};
+    return usePage<{ typeStyles?: TypeStyles }>().props.typeStyles ?? {};
 }
 
 /**

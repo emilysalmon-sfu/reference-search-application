@@ -26,6 +26,8 @@ export default function DataTable<TData>({
 }: DataTableProps<TData>) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
 
+    // TanStack Table returns functions the React Compiler can't memoize, so the compiler skips this component; that's fine here.
+    // eslint-disable-next-line react-hooks/incompatible-library
     const table = useReactTable({
         data,
         columns,

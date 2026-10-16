@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useForm } from '@inertiajs/react';
 import {
     Dialog,
@@ -53,8 +53,6 @@ export default function ApprovalFormModal({
     types = [],
     themes = [],
 }: ApprovalFormModalProps) {
-    // Year picker state
-    const [yearDate, setYearDate] = useState<Date | null>(null);
     const maxYearDate = new Date(new Date().getFullYear() + 1, 11, 31);
 
     const { data, setData, put, processing, errors, clearErrors } = useForm({
@@ -74,29 +72,13 @@ export default function ApprovalFormModal({
     // Get unique theme names for the combobox
     const themeOptions = themes.map((t) => t.theme);
 
-    // Get subthemes for the selected theme
-    const getSubthemesForTheme = (themeName: string): string[] => {
-        const themeData = themes.find((t) => t.theme === themeName);
-        return themeData ? themeData.subthemes : [];
-    };
+    // The chosen theme's subthemes, or every subtheme when no theme is chosen.
+    const availableSubthemes = data.theme
+        ? (themes.find((t) => t.theme === data.theme)?.subthemes ?? [])
+        : [...new Set(themes.flatMap((t) => t.subthemes))];
 
-    const [availableSubthemes, setAvailableSubthemes] = useState<string[]>([]);
-
-    // Update available subthemes when theme changes
-    useEffect(() => {
-        if (data.theme) {
-            setAvailableSubthemes(getSubthemesForTheme(data.theme));
-        } else {
-            // If no theme selected, show all unique subthemes
-            const allSubthemes = themes.flatMap((t) => t.subthemes);
-            setAvailableSubthemes([...new Set(allSubthemes)]);
-        }
-    }, [data.theme, themes]);
-
-    // Sync year date with form data
-    useEffect(() => {
-        setData('year_published', yearDate ? String(yearDate.getFullYear()) : '');
-    }, [yearDate]);
+    // The year picker shows and sets the form's year.
+    const yearDate = data.year_published ? new Date(Number(data.year_published), 0, 1) : null;
 
     // Populate form when article changes or modal opens
     useEffect(() => {
@@ -109,13 +91,6 @@ export default function ApprovalFormModal({
                 } else {
                     keywordsStr = article.keywords;
                 }
-            }
-
-            // Set year date for the picker
-            if (article.year_published) {
-                setYearDate(new Date(Number(article.year_published), 0, 1));
-            } else {
-                setYearDate(null);
             }
 
             setData({
@@ -132,7 +107,7 @@ export default function ApprovalFormModal({
                 type_of_study: article.type_of_study || '',
             });
         }
-    }, [open, article]);
+    }, [open, article, setData]);
 
     const handleClose = () => {
         clearErrors();
@@ -200,7 +175,7 @@ export default function ApprovalFormModal({
                             <DatePicker
                                 id="year_published"
                                 selected={yearDate}
-                                onChange={(date) => setYearDate(date)}
+                                onChange={(date) => setData('year_published', date ? String(date.getFullYear()) : '')}
                                 showYearPicker
                                 dateFormat="yyyy"
                                 minDate={new Date(1800, 0, 1)}

@@ -2,8 +2,8 @@ import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
-import { Head, router, useForm } from '@inertiajs/react';
-import { useState, useEffect } from 'react';
+import { Head, useForm } from '@inertiajs/react';
+import { useState } from 'react';
 import FlashMessages from '@/components/ui/flash-messages';
 import { Badge } from '@/components/ui/badge';
 

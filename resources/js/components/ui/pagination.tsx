@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { router } from '@inertiajs/react';
 
 type PaginationShape = {
@@ -9,7 +9,7 @@ type PaginationShape = {
 
 type Props = {
   pagination?: PaginationShape | null; // allow undefined/null
-  query?: Record<string, any>;
+  query?: Record<string, string | number>;
   maxButtons?: number;
   className?: string;
   onPageChange?: (page: number) => void; // New callback prop
@@ -57,10 +57,7 @@ export default function Pagination({
   const { current_page, last_page, path } = pagination;
   if (typeof current_page !== 'number' || typeof last_page !== 'number') return null;
 
-  const pages = useMemo(
-    () => buildPages(current_page, last_page, maxButtons),
-    [current_page, last_page, maxButtons]
-  );
+  const pages = buildPages(current_page, last_page, maxButtons);
 
   const goTo = (page: number) => {
     if (onPageChange) {

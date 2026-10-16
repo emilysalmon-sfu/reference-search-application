@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { type ColumnDef } from '@tanstack/react-table';
 import { router } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
@@ -38,7 +38,7 @@ interface PaginatedFeedbacks<T> {
 }
 
 interface Props {
-    feedbacks?: PaginatedFeedbacks<Feedback> | null;
+    feedbacks: PaginatedFeedbacks<Feedback>;
 }
 
 const statusColors: Record<string, string> = {
@@ -47,10 +47,11 @@ const statusColors: Record<string, string> = {
 };
 
 export default function FeedbackList({ feedbacks }: Props) {
-    const [localSearchTerm, setLocalSearchTerm] = useState('');
-    const [searchTerm, setSearchTerm] = useState('');
+    // Filters start from the URL, so a reload or a shared link keeps them.
+    const [localSearchTerm, setLocalSearchTerm] = useState(() => new URLSearchParams(window.location.search).get('search') ?? '');
+    const [searchTerm, setSearchTerm] = useState(() => new URLSearchParams(window.location.search).get('search') ?? '');
     const [isSearching, setIsSearching] = useState(false);
-    const [statusFilter, setStatusFilter] = useState<string>('');
+    const [statusFilter, setStatusFilter] = useState(() => new URLSearchParams(window.location.search).get('status') ?? '');
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [feedbackToDelete, setFeedbackToDelete] = useState<Feedback | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -60,37 +61,9 @@ export default function FeedbackList({ feedbacks }: Props) {
     const [feedbackToChangeStatus, setFeedbackToChangeStatus] = useState<Feedback | null>(null);
     const [isChangingStatus, setIsChangingStatus] = useState(false);
 
-    // Guard: if no feedbacks data, don't render
-    if (!feedbacks || !feedbacks.data) {
-        return (
-            <AppLayout>
-                <div className="space-y-6 px-4 sm:px-6 lg:px-8">
-                    <div className="border-b pb-4">
-                        <h1 className="text-4xl font-bold tracking-tight">Feedbacks</h1>
-                        <p className="text-base text-muted-foreground mt-3">Loading...</p>
-                    </div>
-                </div>
-            </AppLayout>
-        );
-    }
-
-    // Initialize search term from URL parameters on mount
-    useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        const search = params.get('search');
-        const status = params.get('status');
-        
-        if (search) {
-            setLocalSearchTerm(search);
-            setSearchTerm(search);
-        }
-        if (status) {
-            setStatusFilter(status);
-        }
-    }, []);
 
     const handlePageChange = (page: number) => {
-        const params: Record<string, any> = { page };
+        const params: Record<string, string | number> = { page };
         if (searchTerm) params.search = searchTerm;
         if (statusFilter) params.status = statusFilter;
 
@@ -102,7 +75,7 @@ export default function FeedbackList({ feedbacks }: Props) {
     };
 
     const handlePageSizeChange = (newPageSize: number) => {
-        const params: Record<string, any> = { per_page: newPageSize };
+        const params: Record<string, string | number> = { per_page: newPageSize };
         if (searchTerm) params.search = searchTerm;
         if (statusFilter) params.status = statusFilter;
 
@@ -131,7 +104,7 @@ export default function FeedbackList({ feedbacks }: Props) {
                 }
             );
         } else {
-            const params: Record<string, any> = {};
+            const params: Record<string, string | number> = {};
             if (term.trim()) params.search = term;
             if (currentStatus) params.status = currentStatus;
 

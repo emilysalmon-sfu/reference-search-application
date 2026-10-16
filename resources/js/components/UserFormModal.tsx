@@ -77,7 +77,7 @@ export default function UserFormModal({
             });
             clearErrors();
         }
-    }, [open, user, mode]);
+    }, [open, user, mode, setData, clearErrors]);
 
     const handleClose = () => {
         clearErrors();

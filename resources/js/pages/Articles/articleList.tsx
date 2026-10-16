@@ -1,6 +1,6 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useState } from 'react';
 import { createColumnHelper } from '@tanstack/react-table';
-import { router, usePage } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import Pagination from '@/components/ui/pagination';
 import DataTable from '@/components/ui/data-table';
@@ -44,16 +44,17 @@ interface ThemeData {
 }
 
 interface Props {
-    articles?: PaginatedArticles<Article> | null;
+    articles: PaginatedArticles<Article>;
     types?: string[];
     themes?: ThemeData[];
 }
 
 export default function ArticleList({ articles, types = [], themes = [] }: Props) {
-    const [localSearchTerm, setLocalSearchTerm] = useState('');
-    const [searchTerm, setSearchTerm] = useState('');
+    // Filters start from the URL, so a reload or a shared link keeps them.
+    const [localSearchTerm, setLocalSearchTerm] = useState(() => new URLSearchParams(window.location.search).get('title') ?? '');
+    const [searchTerm, setSearchTerm] = useState(() => new URLSearchParams(window.location.search).get('title') ?? '');
     const [isSearching, setIsSearching] = useState(false);
-    const [missingYear, setMissingYear] = useState(false);
+    const [missingYear, setMissingYear] = useState(() => new URLSearchParams(window.location.search).get('missing_year') === '1');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
     const [modalMode, setModalMode] = useState<'create' | 'edit'>('edit');
@@ -64,39 +65,11 @@ export default function ArticleList({ articles, types = [], themes = [] }: Props
 
     const columnHelper = createColumnHelper<Article>();
 
-    // Guard: if no articles data, don't render
-    if (!articles || !articles.data) {
-        return (
-            <AppLayout>
-                <div className="space-y-6 px-4 sm:px-6 lg:px-8">
-                    <div className="border-b pb-4">
-                        <h1 className="text-4xl font-bold tracking-tight">Articles</h1>
-                        <p className="text-base text-muted-foreground mt-3">Loading...</p>
-                    </div>
-                </div>
-            </AppLayout>
-        );
-    }
-
-    // Initialize search term from URL parameters on mount
-    useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        const title = params.get('title');
-        const missingYearParam = params.get('missing_year');
-        
-        if (title) {
-            setLocalSearchTerm(title);
-            setSearchTerm(title);
-        }
-        if (missingYearParam === '1') {
-            setMissingYear(true);
-        }
-    }, []);
 
     const handlePageChange = (page: number) => {
         if (searchTerm || missingYear) {
             // During search/filter, maintain params and add page
-            const params: Record<string, any> = {
+            const params: Record<string, string | number> = {
                 page: page,
             };
             if (searchTerm) {
@@ -131,7 +104,7 @@ export default function ArticleList({ articles, types = [], themes = [] }: Props
     const handlePageSizeChange = (newPageSize: number) => {
         if (searchTerm || missingYear) {
             // During search/filter, maintain params and add per_page
-            const params: Record<string, any> = {
+            const params: Record<string, string | number> = {
                 per_page: newPageSize,
             };
             if (searchTerm) {
@@ -181,7 +154,7 @@ export default function ArticleList({ articles, types = [], themes = [] }: Props
             );
         } else {
             // Search through all articles using searchArticlesList endpoint
-            const params: Record<string, any> = {};
+            const params: Record<string, string | number> = {};
             if (term.trim()) {
                 params.title = term;
                 params.author = term;
