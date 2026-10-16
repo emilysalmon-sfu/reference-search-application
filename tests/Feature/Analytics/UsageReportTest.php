@@ -126,5 +126,5 @@ test('no-result searches use the search form labels and order, with a link to re
         ['label' => 'Type of Study', 'value' => 'Meta Analysis'],
         ['label' => 'Theme', 'value' => 'Academic Implications'],
         ['label' => 'Subtheme', 'value' => 'University Administration'],
-    ])->and($search['url'])->toBe('/articles/search?type_of_study=Meta%20Analysis&theme=Academic%20Implications&sub_theme_1=University%20Administration');
+    ])->and($search['url'])->toBe('/articles/search?type_of_study=Meta%20Analysis&theme=Academic%20Implications&subtheme=University%20Administration');
 });

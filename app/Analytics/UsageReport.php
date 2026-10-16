@@ -107,7 +107,7 @@ class UsageReport
                     'filters' => collect($this->inFormOrder(json_decode($params, true)))
                         ->map(fn ($value, $key) => ['label' => self::SEARCH_FIELDS[$key] ?? $key, 'value' => $value])
                         ->values()->all(),
-                    'url' => '/articles/search?'.http_build_query($this->inFormOrder(json_decode($params, true)), '', '&', PHP_QUERY_RFC3986),
+                    'url' => $this->searchUrl(json_decode($params, true)),
                     'count' => $group->count(),
                     'last_searched' => $group->max('searched_at')->setTimezone(Analytics::TIMEZONE)->format('Y-m-d H:i'),
                 ])
@@ -201,6 +201,21 @@ class UsageReport
         uksort($params, fn ($a, $b) => $this->formPosition($a) <=> $this->formPosition($b));
 
         return $params;
+    }
+
+    /**
+     * The public search URL for these params. The form reads its subtheme from "subtheme"
+     * (stored as "sub_theme_1"), so a link with "sub_theme_1" would leave that dropdown empty.
+     */
+    private function searchUrl(array $params): string
+    {
+        $query = [];
+
+        foreach ($this->inFormOrder($params) as $field => $value) {
+            $query[$field === 'sub_theme_1' ? 'subtheme' : $field] = $value;
+        }
+
+        return '/articles/search?'.http_build_query($query, '', '&', PHP_QUERY_RFC3986);
     }
 
     private function formPosition(string $field): int
