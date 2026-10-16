@@ -7,9 +7,57 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+ * Instrument Sans, served from the site (licence: resources/fonts/OFL.txt). Weights 400-600 like the
+ * old Bunny Fonts link, so bold text looks the same. The latin-ext file only loads for pages that need it.
+ */
+@font-face {
+    font-family: 'Instrument Sans';
+    font-style: normal;
+    font-weight: 400 600;
+    font-display: swap;
+    src: url('../fonts/instrument-sans-latin-wght-normal.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: 'Instrument Sans';
+    font-style: normal;
+    font-weight: 400 600;
+    font-display: swap;
+    src: url('../fonts/instrument-sans-latin-ext-wght-normal.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/*
+ * Arial (and Arial Bold for semibold and bold text) resized to take up the same space as Instrument Sans
+ * (widths measured in a browser on the intro page's text; line metrics from Instrument Sans), so the text
+ * doesn't jump when the real font arrives.
+ * ponytail: Arial only (Windows, Mac, iOS); Android and Linux have no Arial and still shift a little.
+ */
+@font-face {
+    font-family: 'Instrument Sans Fallback';
+    font-weight: 400;
+    src: local('Arial');
+    size-adjust: 103.78%;
+    ascent-override: 93.47%;
+    descent-override: 24.09%;
+    line-gap-override: 0%;
+}
+
+@font-face {
+    font-family: 'Instrument Sans Fallback';
+    font-weight: 600 700;
+    src: local('Arial Bold');
+    size-adjust: 98.47%;
+    ascent-override: 98.51%;
+    descent-override: 25.39%;
+    line-gap-override: 0%;
+}
+
 @theme {
     --font-sans:
-        'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
+        'Instrument Sans', 'Instrument Sans Fallback', ui-sans-serif, system-ui, sans-serif,
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
         'Noto Color Emoji';
 
