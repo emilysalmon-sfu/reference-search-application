@@ -82,7 +82,7 @@ const featureSections: FeatureSection[] = [
             },
             {
                 name: 'Export to Excel',
-                description: 'Downloads the selected period as usage-report_{from}_to_{to}.xlsx with Summary, Location, Sources, Searches, No-result searches and Devices tabs.',
+                description: 'Downloads the selected period as usage-report_{from}_to_{to}.xlsx with Summary, Regions, Countries, Sources, Searches, No-result searches and Devices tabs. Every region and both device types are listed, at 0 when they had no visits.',
                 badge: 'Admin Only',
             },
             {

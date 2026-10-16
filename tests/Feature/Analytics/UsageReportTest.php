@@ -86,7 +86,11 @@ test('location, sources and devices are broken down', function () {
 
     $r = UsageReport::forRange('2026-10-01', '2026-10-01')->toArray();
 
-    expect($r['regions'])->toBe([['region' => 'North America', 'visits' => 2], ['region' => 'Europe', 'visits' => 1], ['region' => 'Unknown', 'visits' => 1]])
+    expect($r['regions'])->toBe([
+        ['region' => 'North America', 'visits' => 2], ['region' => 'Europe', 'visits' => 1], ['region' => 'Unknown', 'visits' => 1],
+        ['region' => 'South America', 'visits' => 0], ['region' => 'Africa', 'visits' => 0], ['region' => 'Asia', 'visits' => 0],
+        ['region' => 'Oceania', 'visits' => 0], ['region' => 'Other', 'visits' => 0],
+    ])
         ->and($r['countries'])->toBe([['country_code' => 'CA', 'visits' => 2], ['country_code' => 'FR', 'visits' => 1]])
         ->and($r['source_types'])->toBe([['source_type' => 'direct', 'visits' => 2], ['source_type' => 'search', 'visits' => 1], ['source_type' => 'campaign', 'visits' => 1]])
         ->and($r['referrers'])->toBe([['host' => 'google.com', 'visits' => 1]])
@@ -100,7 +104,28 @@ test('regions are worked out from the country when the report runs', function ()
     seedVisit();
 
     expect(UsageReport::forRange('2026-10-01', '2026-10-01')->toArray()['regions'])
-        ->toBe([['region' => 'South America', 'visits' => 2], ['region' => 'Unknown', 'visits' => 1]]);
+        ->toBe([
+            ['region' => 'South America', 'visits' => 2], ['region' => 'Unknown', 'visits' => 1],
+            ['region' => 'North America', 'visits' => 0], ['region' => 'Africa', 'visits' => 0], ['region' => 'Europe', 'visits' => 0],
+            ['region' => 'Asia', 'visits' => 0], ['region' => 'Oceania', 'visits' => 0], ['region' => 'Other', 'visits' => 0],
+        ]);
+});
+
+test('a period without visits still lists every known region and both devices, at zero', function () {
+    $r = UsageReport::forRange('2026-10-01', '2026-10-01')->toArray();
+
+    expect($r['regions'])->toBe([
+        ['region' => 'North America', 'visits' => 0], ['region' => 'South America', 'visits' => 0], ['region' => 'Africa', 'visits' => 0],
+        ['region' => 'Europe', 'visits' => 0], ['region' => 'Asia', 'visits' => 0], ['region' => 'Oceania', 'visits' => 0],
+        ['region' => 'Other', 'visits' => 0],
+    ])->and($r['devices'])->toBe([['device' => 'desktop', 'visits' => 0], ['device' => 'mobile', 'visits' => 0]]);
+});
+
+test('devices list desktop first even when only mobile visited', function () {
+    seedVisit(['device_type' => 'mobile']);
+
+    expect(UsageReport::forRange('2026-10-01', '2026-10-01')->toArray()['devices'])
+        ->toBe([['device' => 'desktop', 'visits' => 0], ['device' => 'mobile', 'visits' => 1]]);
 });
 
 test('parameters are counted and zero-result searches are grouped', function () {
