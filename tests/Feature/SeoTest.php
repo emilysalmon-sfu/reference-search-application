@@ -34,13 +34,11 @@ test('the search console tag renders only when configured', function () {
     expect($this->get('/')->getContent())->toContain('<meta name="google-site-verification" content="abc123">');
 });
 
-test('fonts load with font-display swap', function () {
-    expect($this->get('/')->getContent())
-        ->toContain('https://fonts.bunny.net/css?family=instrument-sans:400,500,600&amp;display=swap');
-});
-
-test('the search page preloads its framework image at high priority', function () {
-    // The suite's Vite fake returns "" for every URL; wrap it so asset() echoes the path it was asked for.
+/**
+ * The suite's Vite fake returns "" for every URL; wrap it so asset() echoes the path it was asked for.
+ */
+function echoViteAssetPaths(): void
+{
     Illuminate\Support\Facades\Vite::swap(new class(app(Illuminate\Foundation\Vite::class))
     {
         public function __construct(private object $fake)
@@ -62,6 +60,20 @@ test('the search page preloads its framework image at high priority', function (
             return $this->fake->{$method}(...$parameters);
         }
     });
+}
+
+test('the font is served from the site itself and preloaded on every page', function () {
+    echoViteAssetPaths();
+
+    foreach (['/', '/introduction', '/privacy'] as $page) {
+        expect($this->get($page)->getContent())
+            ->not->toContain('fonts.bunny.net')
+            ->toContain('<link rel="preload" as="font" type="font/woff2" href="/build/resources/fonts/instrument-sans-latin-wght-normal.woff2" crossorigin>');
+    }
+});
+
+test('the search page preloads its framework image at high priority', function () {
+    echoViteAssetPaths();
 
     expect($this->get('/')->getContent())
         ->toContain('<link rel="preload" as="image" href="/build/resources/js/assets/framework-image.webp" fetchpriority="high">');
