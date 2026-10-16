@@ -63,7 +63,7 @@ export default function SuggestArticleModal({
     // Year picker state
     const maxYearDate = new Date(new Date().getFullYear() + 1, 11, 31);
 
-    const { data, setData, post, processing, errors, reset, clearErrors, transform } = useForm({
+    const { data, setData, post, processing, errors, clearErrors, transform } = useForm({
         author: '',
         title: '',
         year_published: '',

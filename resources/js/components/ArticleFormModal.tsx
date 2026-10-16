@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect } from 'react';
 import { useForm } from '@inertiajs/react';
 import {
     Dialog,
@@ -93,7 +93,7 @@ export default function ArticleFormModal({
 
     const maxYearDate = new Date(new Date().getFullYear() + 1, 11, 31);
 
-    const { data, setData, put, post, processing, errors, reset, clearErrors, transform } = useForm({
+    const { data, setData, put, post, processing, errors, clearErrors, transform } = useForm({
         author: '',
         title: '',
         year_published: '',

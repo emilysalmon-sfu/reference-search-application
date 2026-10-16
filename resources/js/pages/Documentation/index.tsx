@@ -14,8 +14,6 @@ import {
     ShieldCheck,
     UserCog,
     MessageSquare,
-    Palette,
-    Copy,
     Route,
     ChartColumn
 } from 'lucide-react';

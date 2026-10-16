@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { createColumnHelper } from '@tanstack/react-table';
-import { router, usePage } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import Pagination from '@/components/ui/pagination';
 import DataTable from '@/components/ui/data-table';

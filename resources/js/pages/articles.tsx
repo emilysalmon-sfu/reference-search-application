@@ -1,5 +1,4 @@
 import { ArticleCard } from '@/components/article-card';
-import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import PublicLayout from '@/layouts/public-layout';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
@@ -14,12 +13,6 @@ import SuggestArticleModal from '@/components/SuggestArticleModal';
 import FlashMessages from '@/components/ui/flash-messages';
 import ReportButton from '@/components/report-button';
 import frameworkImage from '@/assets/framework-image.webp';
-
-type PaginatedArticles = {
-    data: ArticleType[];
-    // meta?: any;
-    // links?: any;
-};
 
 type TypeOfStudy = string; // server returns string[] for types
 
