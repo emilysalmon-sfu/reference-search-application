@@ -8,7 +8,6 @@ test('the home page html carries seo metadata without javascript', function () {
         ->toContain('<meta property="og:title" content="IndigiMOS: Indigenous Management &amp; Organizational Studies Research Database">')
         ->toContain('<meta property="og:image" content="http://localhost/og-image.png">')
         ->toContain('<meta name="twitter:card" content="summary_large_image">')
-        ->toContain('<h1>IndigiMOS: Indigenous Management &amp; Organizational Studies Research Database</h1>')
         ->toContain('"@type":"WebSite"')->toContain('"@type":"Dataset"')->toContain('"@type":"Organization"')
         ->toContain('"urlTemplate":"http://localhost/articles/search?keywords={search_term_string}"')
         ->toContain('"logo":"http://localhost/logo.png"');
@@ -19,6 +18,12 @@ test('other public pages get their own title and canonical but no json-ld', func
         ->toContain('<title inertia>Introduction | IndigiMOS</title>')
         ->toContain('<link rel="canonical" href="http://localhost/introduction">')
         ->not->toContain('application/ld+json');
+});
+
+test('public pages show nothing before the app draws them', function () {
+    foreach (['/', '/introduction', '/privacy'] as $page) {
+        expect($this->get($page)->getContent())->toMatch('/<div id="app" data-page="[^"]*"><\/div>/');
+    }
 });
 
 test('admin pages get no public metadata', function () {

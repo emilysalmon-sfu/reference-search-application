@@ -56,7 +56,6 @@
         @inertiaHead
     </head>
     <body class="font-sans antialiased">
-        {{-- What @inertia renders (no SSR), plus a static heading for crawlers that don't run JavaScript. React replaces it on mount. --}}
-        <div id="app" data-page="{{ json_encode($page) }}">@if ($seo)<h1>{{ $seo['title'] }}</h1><p>{{ $seo['description'] }}</p>@endif</div>
+        @inertia
     </body>
 </html>
