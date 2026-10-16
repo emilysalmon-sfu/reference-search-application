@@ -1,5 +1,5 @@
 import { ALPHA2_BY_ATLAS_ID } from '@/lib/country-codes';
-import { geoEqualEarth, geoPath } from 'd3-geo';
+import { geoPath, geoProjection } from 'd3-geo';
 import type { Feature, FeatureCollection, Geometry } from 'geojson';
 import { useMemo, useState } from 'react';
 import { feature } from 'topojson-client';
@@ -7,7 +7,9 @@ import type { GeometryCollection, Topology } from 'topojson-specification';
 import world from 'world-atlas/countries-110m.json';
 
 const WIDTH = 960;
-const HEIGHT = 470;
+
+// Miller: the familiar upright wall map, with less polar stretch than Mercator. Not in d3-geo, but it is one line.
+const miller = () => geoProjection((x, y) => [x, 1.25 * Math.log(Math.tan(Math.PI / 4 + 0.4 * y))]);
 
 // Fewer -> more visits. Separate steps for dark mode, where "more" reads as brighter, not darker.
 const STEPS = [
@@ -23,17 +25,20 @@ type Country = { code: string; name: string; d: string };
 
 const countryName = new Intl.DisplayNames(['en'], { type: 'region' });
 
-// Country outlines never change: project them once per page load.
-function useCountries(): Country[] {
+// Country outlines never change: project them once per page load. The height follows the map's shape.
+function useCountries(): { countries: Country[]; height: number } {
     return useMemo(() => {
         const topology = world as unknown as Topology<{ countries: GeometryCollection<{ name: string }> }>;
         const shapes = (feature(topology, topology.objects.countries) as FeatureCollection<Geometry, { name: string }>).features
             .map((f: Feature<Geometry, { name: string }>) => ({ f, code: ALPHA2_BY_ATLAS_ID[String(f.id ?? f.properties.name)] }))
             .filter(({ code }) => code && code !== 'AQ');
-        const projection = geoEqualEarth().fitSize([WIDTH, HEIGHT], { type: 'FeatureCollection', features: shapes.map(({ f }) => f) });
-        const path = geoPath(projection);
+        const all: FeatureCollection = { type: 'FeatureCollection', features: shapes.map(({ f }) => f) };
+        const path = geoPath(miller().fitWidth(WIDTH, all));
 
-        return shapes.map(({ f, code }) => ({ code, name: countryName.of(code) ?? f.properties.name, d: path(f) ?? '' }));
+        return {
+            countries: shapes.map(({ f, code }) => ({ code, name: countryName.of(code) ?? f.properties.name, d: path(f) ?? '' })),
+            height: Math.ceil(path.bounds(all)[1][1]),
+        };
     }, []);
 }
 
@@ -42,7 +47,7 @@ function useCountries(): Country[] {
  * (a few countries dominate, so a linear scale would leave the rest looking empty).
  */
 export default function WorldMap({ countries }: { countries: { country_code: string; visits: number }[] }) {
-    const shapes = useCountries();
+    const { countries: shapes, height } = useCountries();
     const [hovered, setHovered] = useState<{ country: Country; x: number; y: number } | null>(null);
 
     const visits = new Map(countries.map((c) => [c.country_code, c.visits]));
@@ -53,7 +58,7 @@ export default function WorldMap({ countries }: { countries: { country_code: str
 
     return (
         <div className="relative">
-            <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} role="img" aria-label="Visits by country" className="h-auto w-full" onMouseLeave={() => setHovered(null)}>
+            <svg viewBox={`0 0 ${WIDTH} ${height}`} role="img" aria-label="Visits by country" className="h-auto w-full" onMouseLeave={() => setHovered(null)}>
                 {shapes.map((country) => {
                     const v = visits.get(country.code) ?? 0;
 
