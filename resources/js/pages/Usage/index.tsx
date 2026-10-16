@@ -1,6 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import WorldMap from '@/components/world-map';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
@@ -8,8 +10,8 @@ import { usageExport, usageIndex } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import { endOfQuarter, format, startOfQuarter, startOfYear, subDays, subQuarters } from 'date-fns';
-import { Download, ExternalLink } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { CalendarDays, Download, ExternalLink } from 'lucide-react';
+import { useState, type ReactNode } from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 
 type Row = Record<string, string | number | null>;
@@ -43,6 +45,48 @@ interface UsageReport {
 const breadcrumbs: BreadcrumbItem[] = [{ title: 'Usage', href: usageIndex().url }];
 
 const ymd = (date: Date) => format(date, 'yyyy-MM-dd');
+
+// Report dates are Y-m-d strings; read them as local calendar days.
+const day = (value: string) => new Date(`${value}T00:00`);
+
+/**
+ * A date field that opens a calendar. Browsing months changes nothing; clicking a day calls onPick.
+ */
+function DateField({ id, label, value, min, max, onPick }: { id: string; label: string; value: string; min?: string; max: string; onPick: (value: string) => void }) {
+    const [open, setOpen] = useState(false);
+
+    return (
+        <div>
+            <label htmlFor={id} className="mb-1 block text-xs text-muted-foreground">
+                {label}
+            </label>
+            <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                    <Button id={id} variant="outline" className="w-[150px] justify-start font-normal">
+                        <CalendarDays className="text-muted-foreground" />
+                        {format(day(value), 'MMM d, yyyy')}
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                        mode="single"
+                        required
+                        selected={day(value)}
+                        defaultMonth={day(value)}
+                        captionLayout="dropdown"
+                        startMonth={new Date(2025, 0)}
+                        endMonth={day(max)}
+                        disabled={[{ after: day(max) }, ...(min ? [{ before: day(min) }] : [])]}
+                        onSelect={(date: Date) => {
+                            setOpen(false);
+                            onPick(ymd(date));
+                        }}
+                    />
+                </PopoverContent>
+            </Popover>
+        </div>
+    );
+}
 
 const countryName = new Intl.DisplayNames(['en'], { type: 'region' });
 
@@ -166,7 +210,7 @@ function DailyBars<K extends string>({ title, data, dataKey, config }: { title: 
                         <XAxis dataKey="date" tickLine={false} axisLine={false} minTickGap={24} tickFormatter={(d: string) => format(new Date(`${d}T00:00`), 'MMM d')} />
                         <YAxis allowDecimals={false} tickLine={false} axisLine={false} />
                         <ChartTooltip cursor={false} content={<ChartTooltipContent labelFormatter={(d) => format(new Date(`${d}T00:00`), 'EEE, MMM d, yyyy')} />} />
-                        <Bar dataKey={dataKey} fill={`var(--color-${dataKey})`} radius={[4, 4, 0, 0]} />
+                        <Bar dataKey={dataKey} fill={`var(--color-${dataKey})`} radius={[4, 4, 0, 0]} maxBarSize={48} />
                     </BarChart>
                 </ChartContainer>
             </CardContent>
@@ -213,14 +257,8 @@ export default function Usage({ report }: { report: UsageReport }) {
                             </SelectContent>
                         </Select>
                     </div>
-                    <div>
-                        <label htmlFor="from" className="mb-1 block text-xs text-muted-foreground">From</label>
-                        <Input id="from" type="date" value={report.from} max={report.to} onChange={(e) => e.target.value && visit(e.target.value, report.to)} />
-                    </div>
-                    <div>
-                        <label htmlFor="to" className="mb-1 block text-xs text-muted-foreground">To</label>
-                        <Input id="to" type="date" value={report.to} min={report.from} onChange={(e) => e.target.value && visit(report.from, e.target.value)} />
-                    </div>
+                    <DateField id="from" label="From" value={report.from} max={report.to} onPick={(from) => visit(from, report.to)} />
+                    <DateField id="to" label="To" value={report.to} min={report.from} max={ymd(new Date())} onPick={(to) => visit(report.from, to)} />
                     <p className="pb-2 text-xs text-muted-foreground">
                         Compared with {report.previous_from} to {report.previous_to}
                     </p>
