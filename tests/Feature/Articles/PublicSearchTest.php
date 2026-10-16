@@ -137,6 +137,13 @@ test('journal autocomplete lists distinct matches, prefix matches first', functi
         ->assertExactJson(['Nature', 'Applied Nature']);
 });
 
+test('journal autocomplete only lists journals of approved articles', function () {
+    Article::factory()->create(['journal_name' => 'Nature', 'isApproved' => true]);
+    Article::factory()->create(['journal_name' => 'Nature Pending', 'isApproved' => false]);
+
+    $this->getJson('/articles/journals/search?q=Nature')->assertExactJson(['Nature']);
+});
+
 test('journal autocomplete returns at most 15 names', function () {
     foreach (range(1, 20) as $i) {
         Article::factory()->create(['journal_name' => "Journal {$i}"]);

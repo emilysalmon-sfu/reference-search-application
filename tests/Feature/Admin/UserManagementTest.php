@@ -22,14 +22,16 @@ test('only admins can manage users', function (string $method, string $uri) {
     $target = User::factory()->create();
     $uri = str_replace('{id}', $target->id, $uri);
 
+    $approver = approver();
+
     $this->{$method}($uri)->assertRedirect(route('login'));
 
-    $this->actingAs(approver())
+    $this->actingAs($approver)
         ->{$method}($uri)
         ->assertRedirect('/admin/dashboard')
         ->assertSessionHas('error', 'You do not have permission to access this page.');
 
-    $this->actingAs(approver())->{$method.'Json'}($uri)->assertForbidden();
+    $this->actingAs($approver)->{$method.'Json'}($uri)->assertForbidden();
 })->with([
     ['get', '/admin/users'],
     ['get', '/admin/users/search'],
@@ -197,4 +199,23 @@ test('sending reset links too often fails gracefully', function () {
 
     Notification::assertSentToTimes($user, ResetPassword::class, 1);
     Log::shouldHaveReceived('warning')->with('Password reset link failed', Mockery::any());
+});
+
+test('changing a user password signs out their existing sessions', function () {
+    $user = approver();
+
+    $this->actingAs($user)->get('/admin/dashboard')->assertOk();
+    $otherSession = session()->all();
+    $this->flushSession();
+
+    $this->actingAs(admin())
+        ->put("/admin/users/{$user->id}", userPayload(['email' => $user->email]))
+        ->assertSessionHas('success');
+    $this->flushSession();
+
+    $this->withSession($otherSession)
+        ->actingAs($user->refresh())
+        ->get('/admin/dashboard')
+        ->assertRedirect(route('login'));
+    $this->assertGuest();
 });

@@ -182,12 +182,14 @@ class UserController extends Controller
     /**
      * Logout the current user.
      */
-    public function logout(): RedirectResponse
+    public function logout(Request $request): RedirectResponse
     {
         $userId = Auth::id();
         $userEmail = Auth::user()->email;
 
         Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         Log::info('User logged out', [
             'action' => 'user_logout',
