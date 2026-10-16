@@ -121,11 +121,25 @@ const TABLET_UA = 'Mozilla/5.0 (iPad; CPU OS 17_6 like Mac OS X) AppleWebKit/605
 const BOT_UA = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)';
 
 /**
+ * What a real desktop browser sends with every request (analytics only counts requests that have them).
+ */
+function browserHeaders(): array
+{
+    return ['User-Agent' => DESKTOP_UA, 'Sec-Fetch-Mode' => 'navigate', 'Accept-Language' => 'en-CA,en;q=0.9'];
+}
+
+/**
  * A GET request from a desktop browser at a fixed IP, for the analytics helpers.
  */
 function analyticsRequest(string $uri = '/', array $server = []): Illuminate\Http\Request
 {
-    return Illuminate\Http\Request::create($uri, 'GET', server: ['REMOTE_ADDR' => '203.0.113.7', 'HTTP_USER_AGENT' => DESKTOP_UA, ...$server]);
+    return Illuminate\Http\Request::create($uri, 'GET', server: [
+        'REMOTE_ADDR' => '203.0.113.7',
+        'HTTP_USER_AGENT' => DESKTOP_UA,
+        'HTTP_SEC_FETCH_MODE' => 'navigate',
+        'HTTP_ACCEPT_LANGUAGE' => 'en-CA,en;q=0.9',
+        ...$server,
+    ]);
 }
 
 /**
@@ -134,6 +148,6 @@ function analyticsRequest(string $uri = '/', array $server = []): Illuminate\Htt
 function browse(string $uri, array $headers = [], string $ip = '203.0.113.7')
 {
     return test()->withServerVariables(['REMOTE_ADDR' => $ip])
-        ->withHeaders(['User-Agent' => DESKTOP_UA, ...$headers])
+        ->withHeaders([...browserHeaders(), ...$headers])
         ->get($uri);
 }

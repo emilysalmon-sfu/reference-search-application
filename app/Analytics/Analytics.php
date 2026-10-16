@@ -44,7 +44,7 @@ class Analytics
     {
         $device = self::device($request->userAgent());
 
-        if ($device === null) {
+        if ($device === null || ! self::sentByBrowser($request)) {
             return null;
         }
 
@@ -194,6 +194,19 @@ class Analytics
         }
 
         return 'Other';
+    }
+
+    /**
+     * Browsers send Sec-Fetch-Mode and Accept-Language with every request; scripts posing as a browser
+     * usually don't. Another site given as a bare IP address is a scanner too: real sites have names.
+     */
+    private static function sentByBrowser(Request $request): bool
+    {
+        $referrer = self::host($request->headers->get('referer'));
+
+        return filled($request->header('Sec-Fetch-Mode'))
+            && filled($request->header('Accept-Language'))
+            && ($referrer === self::host($request->root()) || ! filter_var(trim((string) $referrer, '[]'), FILTER_VALIDATE_IP));
     }
 
     private static function host(?string $url): ?string

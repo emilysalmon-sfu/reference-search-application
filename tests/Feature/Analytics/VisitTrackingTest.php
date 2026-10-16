@@ -60,7 +60,7 @@ test('requests that are not public page views are not tracked', function (string
         $this->actingAs(admin());
     }
 
-    $headers = ['User-Agent' => DESKTOP_UA, ...$headers];
+    $headers = [...browserHeaders(), ...$headers];
     $method === 'POST' ? $this->post($uri, [], $headers) : $this->get($uri, $headers);
 
     expect(AnalyticsVisit::count())->toBe(0);
@@ -76,6 +76,26 @@ test('requests that are not public page views are not tracked', function (string
     'admin page' => ['GET', '/admin/dashboard', [], true],
     'logged-in visitor' => ['GET', '/', [], true],
 ]);
+
+test('bots posing as a browser are not counted', function (array $override) {
+    $headers = array_filter([...browserHeaders(), ...$override], fn ($value) => $value !== null);
+
+    $this->get('/', $headers)->assertOk();
+
+    expect(AnalyticsVisit::count())->toBe(0);
+})->with([
+    'no Sec-Fetch-Mode' => [['Sec-Fetch-Mode' => null]],
+    // Test requests get a default Accept-Language, so "missing" is sent as empty.
+    'no Accept-Language' => [['Accept-Language' => '']],
+    'ip address as referrer' => [['Referer' => 'http://103.133.1.1/']],
+    'ipv6 address as referrer' => [['Referer' => 'https://[2001:db8::1]/page']],
+]);
+
+test('a site served on an ip address still counts clicks between its own pages', function () {
+    browse('http://127.0.0.1/introduction', ['Referer' => 'http://127.0.0.1/'])->assertOk();
+
+    expect(AnalyticsVisit::count())->toBe(1);
+});
 
 test('no raw ip or user agent is stored', function () {
     browse('/articles/search?keywords=balance', ip: '198.51.100.23');
