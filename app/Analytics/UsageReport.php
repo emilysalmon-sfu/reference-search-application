@@ -27,6 +27,21 @@ class UsageReport
         'countries' => 'Countries reached',
     ];
 
+    /** The public search form's field labels, in the form's order. */
+    private const SEARCH_FIELDS = [
+        'author' => 'Author',
+        'title' => 'Title',
+        'journal' => 'Journal',
+        'keywords' => 'Keywords',
+        'country' => 'Country',
+        'type_of_study' => 'Type of Study',
+        'theme' => 'Theme',
+        'sub_theme_1' => 'Subtheme',
+        'year_from' => 'Year From',
+        'year_to' => 'Year To',
+        'abstract' => 'Abstract',
+    ];
+
     private function __construct(private CarbonImmutable $from, private CarbonImmutable $to)
     {
     }
@@ -89,7 +104,10 @@ class UsageReport
             'zero_result_searches' => $searches->where('result_count', 0)
                 ->groupBy('params')
                 ->map(fn (Collection $group, string $params) => [
-                    'search' => collect(json_decode($params, true))->map(fn ($value, $key) => "{$key}: {$value}")->implode('; '),
+                    'filters' => collect($this->inFormOrder(json_decode($params, true)))
+                        ->map(fn ($value, $key) => ['label' => self::SEARCH_FIELDS[$key] ?? $key, 'value' => $value])
+                        ->values()->all(),
+                    'url' => '/articles/search?'.http_build_query($this->inFormOrder(json_decode($params, true)), '', '&', PHP_QUERY_RFC3986),
                     'count' => $group->count(),
                     'last_searched' => $group->max('searched_at')->setTimezone(Analytics::TIMEZONE)->format('Y-m-d H:i'),
                 ])
@@ -166,9 +184,29 @@ class UsageReport
             ->map(function (int $count, string $pair) {
                 [$parameter, $value] = explode("\0", $pair, 2);
 
-                return ['parameter' => $parameter, 'value' => $value, 'count' => $count];
+                return ['parameter' => $parameter, 'label' => self::SEARCH_FIELDS[$parameter] ?? $parameter, 'value' => $value, 'count' => $count];
             })
-            ->sortBy([['parameter', 'asc'], ['count', 'desc']])
+            ->sortBy([
+                fn ($a, $b) => $this->formPosition($a['parameter']) <=> $this->formPosition($b['parameter']),
+                fn ($a, $b) => $b['count'] <=> $a['count'],
+            ])
             ->values()->all();
+    }
+
+    /**
+     * Search params sorted the way the search form lists its fields.
+     */
+    private function inFormOrder(array $params): array
+    {
+        uksort($params, fn ($a, $b) => $this->formPosition($a) <=> $this->formPosition($b));
+
+        return $params;
+    }
+
+    private function formPosition(string $field): int
+    {
+        $position = array_search($field, array_keys(self::SEARCH_FIELDS), true);
+
+        return $position === false ? PHP_INT_MAX : $position;
     }
 }

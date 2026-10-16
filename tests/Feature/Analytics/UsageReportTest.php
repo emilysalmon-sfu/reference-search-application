@@ -104,10 +104,27 @@ test('parameters are counted and zero-result searches are grouped', function () 
     $r = UsageReport::forRange('2026-10-01', '2026-10-10')->toArray();
 
     expect($r['parameters'])->toBe([
-        ['parameter' => 'keywords', 'value' => 'salmon', 'count' => 3],
-        ['parameter' => 'keywords', 'value' => 'land', 'count' => 1],
-        ['parameter' => 'theme', 'value' => 'X', 'count' => 2],
+        ['parameter' => 'keywords', 'label' => 'Keywords', 'value' => 'salmon', 'count' => 3],
+        ['parameter' => 'keywords', 'label' => 'Keywords', 'value' => 'land', 'count' => 1],
+        ['parameter' => 'theme', 'label' => 'Theme', 'value' => 'X', 'count' => 2],
     ])->and($r['zero_result_searches'])->toBe([
-        ['search' => 'keywords: salmon', 'count' => 2, 'last_searched' => '2026-10-05 10:00'],
+        [
+            'filters' => [['label' => 'Keywords', 'value' => 'salmon']],
+            'url' => '/articles/search?keywords=salmon',
+            'count' => 2,
+            'last_searched' => '2026-10-05 10:00',
+        ],
     ]);
+});
+
+test('no-result searches use the search form labels and order, with a link to rerun them', function () {
+    seedSearch('{"sub_theme_1":"University Administration","theme":"Academic Implications","type_of_study":"Meta Analysis"}', 0, vancouver('2026-10-02 10:00'));
+
+    $search = UsageReport::forRange('2026-10-01', '2026-10-10')->toArray()['zero_result_searches'][0];
+
+    expect($search['filters'])->toBe([
+        ['label' => 'Type of Study', 'value' => 'Meta Analysis'],
+        ['label' => 'Theme', 'value' => 'Academic Implications'],
+        ['label' => 'Subtheme', 'value' => 'University Administration'],
+    ])->and($search['url'])->toBe('/articles/search?type_of_study=Meta%20Analysis&theme=Academic%20Implications&sub_theme_1=University%20Administration');
 });

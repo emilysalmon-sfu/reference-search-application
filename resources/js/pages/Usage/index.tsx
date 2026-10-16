@@ -8,7 +8,8 @@ import { usageExport, usageIndex } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import { endOfQuarter, format, startOfQuarter, startOfYear, subDays, subQuarters } from 'date-fns';
-import { Download } from 'lucide-react';
+import { Download, ExternalLink } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 
 type Row = Record<string, string | number | null>;
@@ -34,8 +35,8 @@ interface UsageReport {
     source_types: { source_type: string; visits: number }[];
     referrers: { host: string; visits: number }[];
     campaigns: { utm_source: string | null; utm_medium: string | null; utm_campaign: string | null; visits: number }[];
-    parameters: { parameter: string; value: string; count: number }[];
-    zero_result_searches: { search: string; count: number; last_searched: string }[];
+    parameters: { parameter: string; label: string; value: string; count: number }[];
+    zero_result_searches: { filters: { label: string; value: string }[]; url: string; count: number; last_searched: string }[];
     devices: { device: string; visits: number }[];
 }
 
@@ -57,20 +58,6 @@ function presets(): Record<string, { label: string; from: string; to: string }> 
         thisYear: { label: 'This year', from: ymd(startOfYear(today)), to: ymd(today) },
     };
 }
-
-const PARAMETER_LABELS: Record<string, string> = {
-    keywords: 'Keywords',
-    title: 'Title',
-    author: 'Author',
-    abstract: 'Abstract',
-    journal: 'Journal',
-    theme: 'Theme',
-    sub_theme_1: 'Subtheme',
-    country: 'Country',
-    type_of_study: 'Type of study',
-    year_from: 'Year from',
-    year_to: 'Year to',
-};
 
 const SOURCE_LABELS: Record<string, string> = {
     direct: 'Direct',
@@ -125,9 +112,9 @@ function Table({
 }: {
     title: string;
     headings: string[];
-    rows: (string | number | null)[][];
+    rows: ReactNode[][];
     emptyText?: string;
-    highlight?: (row: (string | number | null)[]) => boolean;
+    highlight?: (row: ReactNode[]) => boolean;
 }) {
     return (
         <Card className="gap-2">
@@ -152,7 +139,7 @@ function Table({
                             {rows.map((row, r) => (
                                 <tr key={r} className={`border-b last:border-0 ${highlight?.(row) ? 'bg-muted/60 font-semibold' : ''}`}>
                                     {row.map((cell, i) => (
-                                        <td key={i} className={`py-1.5 ${i > 0 ? 'text-right tabular-nums' : 'break-all'}`}>
+                                        <td key={i} className={`py-1.5 ${i > 0 ? 'pl-3 text-right whitespace-nowrap tabular-nums' : 'break-words'}`}>
                                             {cell ?? '-'}
                                         </td>
                                     ))}
@@ -301,16 +288,36 @@ export default function Usage({ report }: { report: UsageReport }) {
                             {parameterGroups.map(([parameter, values]) => (
                                 <Table
                                     key={parameter}
-                                    title={`Top ${(PARAMETER_LABELS[parameter] ?? parameter).toLowerCase()}`}
-                                    headings={[PARAMETER_LABELS[parameter] ?? parameter, 'Times used']}
+                                    title={`Top ${values[0].label.toLowerCase()}`}
+                                    headings={[values[0].label, 'Times used']}
                                     rows={values.slice(0, 10).map((v) => [v.value, v.count])}
                                 />
                             ))}
                         </div>
                         <Table
                             title="Searches with no results"
-                            headings={['Search', 'Times searched', 'Last searched']}
-                            rows={report.zero_result_searches.map((z) => [z.search, z.count, z.last_searched])}
+                            headings={['Search', 'Times searched', 'Last searched', '']}
+                            rows={report.zero_result_searches.map((z) => [
+                                <span className="flex flex-wrap gap-x-4 gap-y-1">
+                                    {z.filters.map((f) => (
+                                        <span key={f.label}>
+                                            <strong className="font-semibold">{f.label}</strong> | {f.value}
+                                        </span>
+                                    ))}
+                                </span>,
+                                z.count,
+                                z.last_searched,
+                                <a
+                                    href={z.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    title="Open this search on the site"
+                                    aria-label="Open this search on the site"
+                                    className="inline-flex text-muted-foreground hover:text-foreground"
+                                >
+                                    <ExternalLink className="h-4 w-4" />
+                                </a>,
+                            ])}
                             emptyText="Every search in this period found results."
                         />
                     </div>

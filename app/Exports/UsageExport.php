@@ -39,9 +39,13 @@ class UsageExport implements WithMultipleSheets
                 ], $r['campaigns']),
             ]),
             new UsageSheet('Searches', ['Parameter', 'Value', 'Times used'],
-                array_map(fn ($p) => [$p['parameter'], $p['value'], $p['count']], $r['parameters'])),
+                array_map(fn ($p) => [$p['label'], $p['value'], $p['count']], $r['parameters'])),
             new UsageSheet('No-result searches', ['Search', 'Times searched', 'Last searched'],
-                array_map(fn ($z) => [$z['search'], $z['count'], $z['last_searched']], $r['zero_result_searches'])),
+                array_map(fn ($z) => [
+                    implode('; ', array_map(fn ($f) => "{$f['label']} | {$f['value']}", $z['filters'])),
+                    $z['count'],
+                    $z['last_searched'],
+                ], $r['zero_result_searches'])),
             new UsageSheet('Devices', ['Device', 'Visits'],
                 array_map(fn ($d) => [$d['device'], $d['visits']], $r['devices'])),
         ];

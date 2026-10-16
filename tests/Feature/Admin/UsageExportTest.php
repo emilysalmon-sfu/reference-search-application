@@ -31,8 +31,8 @@ test('the export has six sheets with the expected headers and dashboard values',
             ['Source type', 'campaign', 1],
             ['Campaign', 'newsletter / - / fall', 1],
         ])
-        ->and($sheet('Searches'))->toBe([['Parameter', 'Value', 'Times used'], ['keywords', 'salmon', 1]])
-        ->and($sheet('No-result searches'))->toBe([['Search', 'Times searched', 'Last searched'], ['keywords: salmon', 1, '2026-10-02 12:00']])
+        ->and($sheet('Searches'))->toBe([['Parameter', 'Value', 'Times used'], ['Keywords', 'salmon', 1]])
+        ->and($sheet('No-result searches'))->toBe([['Search', 'Times searched', 'Last searched'], ['Keywords | salmon', 1, '2026-10-02 12:00']])
         ->and($sheet('Devices'))->toBe([['Device', 'Visits'], ['mobile', 1]]);
 });
 
