@@ -8,7 +8,6 @@ use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\EnsureUserIsAdmin;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -62,15 +61,6 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
             Route::get('config', 'show')->name('configIndex');
             Route::put('config/update', 'update')->name('configUpdate');
         });
-
-        // Temporary: what the app sees of a request behind Laravel Cloud's edge, to set trustProxies. Remove after.
-        Route::get('request-check', fn (Request $request) => [
-            'ip' => $request->ip(),
-            'ips' => $request->ips(),
-            'remote_addr' => $request->server('REMOTE_ADDR'),
-            ...collect(['x-forwarded-for', 'x-forwarded-proto', 'x-real-ip', 'cf-connecting-ip', 'true-client-ip', 'cf-ipcountry'])
-                ->mapWithKeys(fn (string $header) => [$header => $request->header($header)]),
-        ]);
     });
     Route::controller(ArticleController::class)->group(function () {
         Route::get('articles/new', 'create')->name('articlesCreate');
