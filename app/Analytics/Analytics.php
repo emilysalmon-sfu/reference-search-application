@@ -62,15 +62,12 @@ class Analytics
             return $visit;
         }
 
-        $country = self::country($request);
-
         return AnalyticsVisit::create([
             ...self::source($request),
             'visitor_hash' => $hash,
             'started_at' => now(),
             'last_seen_at' => now(),
-            'country_code' => $country,
-            'region' => self::region($country),
+            'country_code' => self::country($request),
             'device_type' => $device,
             'landing_path' => '/'.ltrim($request->path(), '/'),
         ]);

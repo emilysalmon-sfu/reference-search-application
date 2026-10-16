@@ -12,7 +12,7 @@ test('the export has six sheets with the expected headers and dashboard values',
     $at = CarbonImmutable::parse('2026-10-02 12:00', 'America/Vancouver')->utc();
     AnalyticsVisit::create([
         'visitor_hash' => str_repeat('a', 64), 'started_at' => $at, 'last_seen_at' => $at, 'source_type' => 'campaign',
-        'utm_source' => 'newsletter', 'utm_campaign' => 'fall', 'country_code' => 'CA', 'region' => 'North America',
+        'utm_source' => 'newsletter', 'utm_campaign' => 'fall', 'country_code' => 'CA',
         'device_type' => 'tablet', 'landing_path' => '/',
     ]);
     AnalyticsSearch::create(['params' => '{"keywords":"salmon"}', 'result_count' => 0, 'searched_at' => $at]);

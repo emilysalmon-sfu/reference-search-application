@@ -79,9 +79,9 @@ test('daily series include empty days', function () {
 });
 
 test('location, sources and devices are broken down', function () {
-    seedVisit(['country_code' => 'CA', 'region' => 'North America', 'source_type' => 'search', 'source_host' => 'google.com']);
-    seedVisit(['country_code' => 'CA', 'region' => 'North America', 'device_type' => 'tablet', 'source_type' => 'campaign', 'utm_source' => 'newsletter', 'utm_medium' => 'email', 'utm_campaign' => 'fall']);
-    seedVisit(['country_code' => 'FR', 'region' => 'Europe', 'device_type' => 'mobile']);
+    seedVisit(['country_code' => 'CA', 'source_type' => 'search', 'source_host' => 'google.com']);
+    seedVisit(['country_code' => 'CA', 'device_type' => 'tablet', 'source_type' => 'campaign', 'utm_source' => 'newsletter', 'utm_medium' => 'email', 'utm_campaign' => 'fall']);
+    seedVisit(['country_code' => 'FR', 'device_type' => 'mobile']);
     seedVisit();
 
     $r = UsageReport::forRange('2026-10-01', '2026-10-01')->toArray();
@@ -92,6 +92,15 @@ test('location, sources and devices are broken down', function () {
         ->and($r['referrers'])->toBe([['host' => 'google.com', 'visits' => 1]])
         ->and($r['campaigns'])->toBe([['utm_source' => 'newsletter', 'utm_medium' => 'email', 'utm_campaign' => 'fall', 'visits' => 1]])
         ->and($r['devices'])->toBe([['device' => 'desktop', 'visits' => 2], ['device' => 'mobile', 'visits' => 2]]);
+});
+
+test('regions are worked out from the country when the report runs', function () {
+    seedVisit(['country_code' => 'BR']);
+    seedVisit(['country_code' => 'BR']);
+    seedVisit();
+
+    expect(UsageReport::forRange('2026-10-01', '2026-10-01')->toArray()['regions'])
+        ->toBe([['region' => 'South America', 'visits' => 2], ['region' => 'Unknown', 'visits' => 1]]);
 });
 
 test('parameters are counted and zero-result searches are grouped', function () {

@@ -29,7 +29,6 @@ return new class extends Migration
             $table->string('utm_medium')->nullable();
             $table->string('utm_campaign')->nullable();
             $table->char('country_code', 2)->nullable();
-            $table->string('region')->nullable();
             $table->string('device_type', 8);
             $table->string('landing_path');
             $table->index(['visitor_hash', 'last_seen_at']);

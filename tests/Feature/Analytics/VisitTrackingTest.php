@@ -19,7 +19,6 @@ test('a page view starts a visit with its details', function () {
         'source_type' => 'social',
         'source_host' => 'lnkd.in',
         'country_code' => 'CA',
-        'region' => 'North America',
         'device_type' => 'desktop',
         'landing_path' => '/introduction',
     ]);

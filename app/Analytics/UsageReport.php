@@ -87,7 +87,7 @@ class UsageReport
             ])->values()->all(),
             'visits_over_time' => $this->perDay($visits, 'started_at', 'visits'),
             'searches_over_time' => $this->perDay($searches, 'searched_at', 'searches'),
-            'regions' => $this->tally($visits, fn ($visit) => $visit->region ?? 'Unknown', 'region'),
+            'regions' => $this->tally($visits, fn ($visit) => Analytics::region($visit->country_code) ?? 'Unknown', 'region'),
             'countries' => $this->tally($visits->whereNotNull('country_code'), 'country_code', 'country_code'),
             'source_types' => $this->tally($visits, 'source_type', 'source_type'),
             'referrers' => $this->tally($visits->whereNotNull('source_host'), 'source_host', 'host'),
@@ -132,7 +132,7 @@ class UsageReport
     private function visits(CarbonImmutable $from, CarbonImmutable $to): Collection
     {
         return AnalyticsVisit::whereBetween('started_at', [$from->utc(), $to->endOfDay()->utc()])
-            ->get(['started_at', 'country_code', 'region', 'source_type', 'source_host', 'utm_source', 'utm_medium', 'utm_campaign', 'device_type']);
+            ->get(['started_at', 'country_code', 'source_type', 'source_host', 'utm_source', 'utm_medium', 'utm_campaign', 'device_type']);
     }
 
     private function searches(CarbonImmutable $from, CarbonImmutable $to): Collection
