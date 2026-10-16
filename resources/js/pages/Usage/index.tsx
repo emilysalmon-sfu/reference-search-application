@@ -298,10 +298,11 @@ export default function Usage({ report }: { report: UsageReport }) {
                             title="Searches with no results"
                             headings={['Search', 'Times searched', 'Last searched', '']}
                             rows={report.zero_result_searches.map((z) => [
-                                <span className="flex flex-wrap gap-x-4 gap-y-1">
-                                    {z.filters.map((f) => (
+                                <span>
+                                    {z.filters.map((f, k) => (
                                         <span key={f.label}>
-                                            <strong className="font-semibold">{f.label}</strong> | {f.value}
+                                            {k > 0 && <span className="text-muted-foreground">{' | '}</span>}
+                                            <strong className="font-semibold">{f.label}</strong>: {f.value}
                                         </span>
                                     ))}
                                 </span>,
