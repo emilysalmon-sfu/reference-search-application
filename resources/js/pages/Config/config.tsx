@@ -82,7 +82,6 @@ export default function Config({ config, existingTypes = [], defaultTypeStyles =
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Config Data Update: " + data)
         put('config/update', {
         });
     };
