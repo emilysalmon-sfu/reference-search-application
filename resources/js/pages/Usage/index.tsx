@@ -260,7 +260,7 @@ export default function Usage({ report }: { report: UsageReport }) {
                     <DateField id="from" label="From" value={report.from} max={report.to} onPick={(from) => visit(from, report.to)} />
                     <DateField id="to" label="To" value={report.to} min={report.from} max={ymd(new Date())} onPick={(to) => visit(report.from, to)} />
                     <p className="pb-2 text-xs text-muted-foreground">
-                        Compared with {report.previous_from} to {report.previous_to}
+                        Percent changes compare with {format(day(report.previous_from), 'MMM d, yyyy')} – {format(day(report.previous_to), 'MMM d, yyyy')}
                     </p>
                     <a
                         href={usageExport.url({ query: { from: report.from, to: report.to } })}
