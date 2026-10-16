@@ -43,8 +43,8 @@
         <link rel="icon" href="/favicon.svg" type="image/svg+xml">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600&amp;display=swap" rel="stylesheet" />
+        {{-- The font file every page needs: fetch it with the CSS instead of after it. --}}
+        <link rel="preload" as="font" type="font/woff2" href="{{ Vite::asset('resources/fonts/instrument-sans-latin-wght-normal.woff2') }}" crossorigin>
 
         @if ($page['component'] === 'articles')
             {{-- The framework image is the search page's largest element: fetch it before the JavaScript renders it. --}}
@@ -56,7 +56,6 @@
         @inertiaHead
     </head>
     <body class="font-sans antialiased">
-        {{-- What @inertia renders (no SSR), plus a static heading for crawlers that don't run JavaScript. React replaces it on mount. --}}
-        <div id="app" data-page="{{ json_encode($page) }}">@if ($seo)<h1>{{ $seo['title'] }}</h1><p>{{ $seo['description'] }}</p>@endif</div>
+        @inertia
     </body>
 </html>
