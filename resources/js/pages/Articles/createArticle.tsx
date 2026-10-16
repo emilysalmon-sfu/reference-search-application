@@ -5,7 +5,6 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { useState, useEffect } from 'react';
 import FlashMessages from '@/components/ui/flash-messages';
 
 type Article = {
@@ -40,18 +39,11 @@ export default function CreateArticles({ article }: Props) {
         doi: article?.doi?.toString() ?? '',
     });
 
-    // local Date state for the year picker
-    const [yearDate, setYearDate] = useState<Date | null>(
-        article?.year_published ? new Date(Number(article.year_published), 0, 1) : null
-    );
+    // The year picker shows and sets the form's year.
+    const yearDate = data.year_published ? new Date(Number(data.year_published), 0, 1) : null;
 
     // max allowed year = current year + 1
     const maxYearDate = new Date(new Date().getFullYear() + 1, 11, 31);
-
-    // keep form data in sync with the date picker
-    useEffect(() => {
-        setData('year_published', yearDate ? String(yearDate.getFullYear()) : '');
-    }, [yearDate]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -102,7 +94,7 @@ export default function CreateArticles({ article }: Props) {
                             <label className="mb-1 text-xs font-medium text-gray-600 dark:text-gray-300">Year</label>
                             <DatePicker
                                 selected={yearDate}
-                                onChange={(date) => setYearDate(date)}
+                                onChange={(date) => setData('year_published', date ? String(date.getFullYear()) : '')}
                                 showYearPicker
                                 dateFormat="yyyy"
                                 minDate={new Date(1800, 0, 1)}
