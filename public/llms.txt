@@ -62,4 +62,5 @@ Results show 10 articles per page; add `page=2`, `page=3` and so on for more. Ea
 
 - [Search](https://www.indigimos.com/): search and filter the database; also links to suggest a source.
 - [Introduction and framework](https://www.indigimos.com/introduction): what the site is, the meaning of its name, and the themes and subthemes.
+- [Privacy](https://www.indigimos.com/privacy): the anonymous usage statistics the site collects, and what it does not collect.
 - [Sitemap](https://www.indigimos.com/sitemap.xml): every public page.
